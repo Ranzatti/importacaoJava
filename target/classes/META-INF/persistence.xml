@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+<persistence-unit name="louveira">
+
+    <class>Entity.AnulacaoEmpenho</class>
+    <class>Entity.AnulacaoEmpenhoPK</class>
+
+    <class>Entity.Banco</class>
+    <class>Entity.ContasBancarias</class>
+    <class>Entity.Agencia</class>
+    <class>Entity.AgenciaPK</class>
+    <class>Entity.ContasBancarias</class>
+    <class>Entity.ContasFonteRecurso</class>
+    <class>Entity.ContasFonteRecursoPK</class>
+    <class>Entity.ContasCA</class>
+    <class>Entity.ContasCAPK</class>
+
+    <class>Entity.AnulaReceita</class>
+    <class>Entity.AnulaReceitaPK</class>
+    <class>Entity.AnulaRecItens</class>
+    <class>Entity.AnulaRecItensPK</class>
+    <class>Entity.AnulaRecContaBanco</class>
+    <class>Entity.AnulaRecContaBancoPK</class>
+
+    <class>Entity.AutPagto</class>
+    <class>Entity.AutPagtoPK</class>
+    <class>Entity.ItensAutPagto</class>
+    <class>Entity.ItensAutPagtoPK</class>
+    <class>Entity.AutPagtoFonteRec</class>
+    <class>Entity.AutPagtoFonteRecPK</class>
+
+    <class>Entity.DescontosOP</class>
+    <class>Entity.DescontosOPPK</class>
+    <class>Entity.DescontosPagto</class>
+    <class>Entity.DescontosPagtoPK</class>
+
+    <class>Entity.DocPagto</class>
+    <class>Entity.DocPagtoPK</class>
+
+    <class>Entity.GuiaReceita</class>
+    <class>Entity.GuiaReceitaPK</class>
+    <class>Entity.ItensGuiaReceita</class>
+    <class>Entity.ItensGuiaReceitaPK</class>
+    <class>Entity.RecContaBanco</class>
+    <class>Entity.RecContaBancoPK</class>
+
+    <class>Entity.Debito</class>
+    <class>Entity.DebitoPK</class>
+    <class>Entity.Credito</class>
+    <class>Entity.CreditoPK</class>
+    <class>Entity.SaidasCaixa</class>
+    <class>Entity.SaidasCaixaPK</class>
+    <class>Entity.EntradasCaixa</class>
+    <class>Entity.EntradasCaixaPK</class>
+    <class>Entity.Cheque</class>
+    <class>Entity.ChequePK</class>
+
+    <class>Entity.Empenhos</class>
+    <class>Entity.EmpenhosPK</class>
+    <class>Entity.EmpFonteRecurso</class>
+    <class>Entity.EmpFonteRecursoPK</class>
+    <class>Entity.ItensEmpenho</class>
+    <class>Entity.ItensEmpenhoPK</class>
+
+    <class>Entity.LiquidacaoEmpenho</class>
+    <class>Entity.LiquidacaoEmpenhoPK</class>
+    <class>Entity.LiquidaPagto</class>
+    <class>Entity.LiquidaPagtoPK</class>
+    <class>Entity.Pagamentos</class>
+    <class>Entity.PagamentosPK</class>
+
+    <class>Entity.OrdensPagto</class>
+    <class>Entity.OrdensPagtoPK</class>
+    <class>Entity.OPFonteRecurso</class>
+    <class>Entity.OPFonteRecursoPK</class>
+    <class>Entity.PagtoOP</class>
+    <class>Entity.PagtoOPPK</class>
+
+    <class>Entity.LiquidaRestos</class>
+    <class>Entity.LiquidaRestosPK</class>
+    <class>Entity.LiqRestCronogra</class>
+    <class>Entity.LiqRestCronograPK</class>
+    <class>Entity.BaixaRestos</class>
+    <class>Entity.BaixaRestosPK</class>
+
+    <class>Entity.ElemDespesa</class>
+    <class>Entity.ElemDespesaPK</class>
+    <class>Entity.ElemDespRecurso</class>
+    <class>Entity.ElemDespRecursoPK</class>
+    <class>Entity.ElemDespCA</class>
+    <class>Entity.ElemDespCAPK</class>
+    <class>Entity.ElemDespMensal</class>
+    <class>Entity.ElemDespMensalPK</class>
+    <class>Entity.TabDespesa</class>
+    <class>Entity.TabDespesaPK</class>
+
+    <class>Entity.Receitas</class>
+    <class>Entity.ReceitasPK</class>
+    <class>Entity.ReceitaFonteRecurso</class>
+    <class>Entity.ReceitaFonteRecursoPK</class>
+    <class>Entity.ReceitasCA</class>
+    <class>Entity.ReceitasCAPK</class>
+    <class>Entity.ReceitaMensal</class>
+    <class>Entity.ReceitaMensalPK</class>
+    <class>Entity.TabReceitas</class>
+    <class>Entity.TabReceitasPK</class>
+
+    <class>Entity.RestosInscritos</class>
+    <class>Entity.RestosInscritosPK</class>
+    <class>Entity.RestosFonteRec</class>
+    <class>Entity.RestosFonteRecPK</class>
+    <class>Entity.RestosProcParc</class>
+    <class>Entity.RestosProcParcPK</class>
+
+    <properties>
+        <property name="dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+        <property name="connection.driver_class" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="hibernate.connection.username" value="PMLO"/>
+        <property name="hibernate.connection.password" value="sicsadm"/>
+        <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521/LOCAL"/>
+        <property name="hibernate.hbm2ddl.auto" value="none"/>
+        <property name="hibernate.show_sql" value="false"/>
+        <property name="hibernate.format_sql" value="false"/>
+    </properties>
+
+</persistence-unit>
+
+<persistence-unit name="3Hearts">
+
+    <class>Entity.AnulacaoEmpenho</class>
+    <class>Entity.AnulacaoEmpenhoPK</class>
+
+    <class>Entity.Banco</class>
+    <class>Entity.ContasBancarias</class>
+    <class>Entity.Agencia</class>
+    <class>Entity.AgenciaPK</class>
+    <class>Entity.ContasBancarias</class>
+    <class>Entity.ContasFonteRecurso</class>
+    <class>Entity.ContasFonteRecursoPK</class>
+    <class>Entity.ContasCA</class>
+    <class>Entity.ContasCAPK</class>
+
+    <class>Entity.AnulaReceita</class>
+    <class>Entity.AnulaReceitaPK</class>
+    <class>Entity.AnulaRecItens</class>
+    <class>Entity.AnulaRecItensPK</class>
+    <class>Entity.AnulaRecContaBanco</class>
+    <class>Entity.AnulaRecContaBancoPK</class>
+
+    <class>Entity.AutPagto</class>
+    <class>Entity.AutPagtoPK</class>
+    <class>Entity.ItensAutPagto</class>
+    <class>Entity.ItensAutPagtoPK</class>
+    <class>Entity.AutPagtoFonteRec</class>
+    <class>Entity.AutPagtoFonteRecPK</class>
+
+    <class>Entity.DescontosOP</class>
+    <class>Entity.DescontosOPPK</class>
+    <class>Entity.DescontosPagto</class>
+    <class>Entity.DescontosPagtoPK</class>
+
+    <class>Entity.DocPagto</class>
+    <class>Entity.DocPagtoPK</class>
+
+    <class>Entity.GuiaReceita</class>
+    <class>Entity.GuiaReceitaPK</class>
+    <class>Entity.ItensGuiaReceita</class>
+    <class>Entity.ItensGuiaReceitaPK</class>
+    <class>Entity.RecContaBanco</class>
+    <class>Entity.RecContaBancoPK</class>
+
+    <class>Entity.Debito</class>
+    <class>Entity.DebitoPK</class>
+    <class>Entity.Credito</class>
+    <class>Entity.CreditoPK</class>
+    <class>Entity.SaidasCaixa</class>
+    <class>Entity.SaidasCaixaPK</class>
+    <class>Entity.EntradasCaixa</class>
+    <class>Entity.EntradasCaixaPK</class>
+    <class>Entity.Cheque</class>
+    <class>Entity.ChequePK</class>
+
+    <class>Entity.Empenhos</class>
+    <class>Entity.EmpenhosPK</class>
+    <class>Entity.EmpFonteRecurso</class>
+    <class>Entity.EmpFonteRecursoPK</class>
+    <class>Entity.ItensEmpenho</class>
+    <class>Entity.ItensEmpenhoPK</class>
+
+    <class>Entity.LiquidacaoEmpenho</class>
+    <class>Entity.LiquidacaoEmpenhoPK</class>
+    <class>Entity.LiquidaPagto</class>
+    <class>Entity.LiquidaPagtoPK</class>
+    <class>Entity.Pagamentos</class>
+    <class>Entity.PagamentosPK</class>
+
+    <class>Entity.OrdensPagto</class>
+    <class>Entity.OrdensPagtoPK</class>
+    <class>Entity.OPFonteRecurso</class>
+    <class>Entity.OPFonteRecursoPK</class>
+    <class>Entity.PagtoOP</class>
+    <class>Entity.PagtoOPPK</class>
+
+    <class>Entity.LiquidaRestos</class>
+    <class>Entity.LiquidaRestosPK</class>
+    <class>Entity.LiqRestCronogra</class>
+    <class>Entity.LiqRestCronograPK</class>
+    <class>Entity.BaixaRestos</class>
+    <class>Entity.BaixaRestosPK</class>
+
+    <class>Entity.ElemDespesa</class>
+    <class>Entity.ElemDespesaPK</class>
+    <class>Entity.ElemDespRecurso</class>
+    <class>Entity.ElemDespRecursoPK</class>
+    <class>Entity.ElemDespCA</class>
+    <class>Entity.ElemDespCAPK</class>
+    <class>Entity.ElemDespMensal</class>
+    <class>Entity.ElemDespMensalPK</class>
+    <class>Entity.TabDespesa</class>
+    <class>Entity.TabDespesaPK</class>
+
+    <class>Entity.Receitas</class>
+    <class>Entity.ReceitasPK</class>
+    <class>Entity.ReceitaFonteRecurso</class>
+    <class>Entity.ReceitaFonteRecursoPK</class>
+    <class>Entity.ReceitasCA</class>
+    <class>Entity.ReceitasCAPK</class>
+    <class>Entity.ReceitaMensal</class>
+    <class>Entity.ReceitaMensalPK</class>
+    <class>Entity.TabReceitas</class>
+    <class>Entity.TabReceitasPK</class>
+
+    <class>Entity.RestosInscritos</class>
+    <class>Entity.RestosInscritosPK</class>
+    <class>Entity.RestosFonteRec</class>
+    <class>Entity.RestosFonteRecPK</class>
+    <class>Entity.RestosProcParc</class>
+    <class>Entity.RestosProcParcPK</class>
+
+    <properties>
+        <property name="dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+        <property name="connection.driver_class" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="hibernate.connection.username" value="PM3H"/>
+        <property name="hibernate.connection.password" value="sicsadm"/>
+        <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521/LOCAL"/>
+        <property name="hibernate.hbm2ddl.auto" value="none"/>
+        <property name="hibernate.show_sql" value="false"/>
+        <property name="hibernate.format_sql" value="false"/>
+    </properties>
+
+</persistence-unit>
+</persistence>
