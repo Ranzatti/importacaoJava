@@ -5,115 +5,115 @@
 
 <persistence-unit name="louveira">
 
-    <class>Entity.AnulacaoEmpenho</class>
-    <class>Entity.AnulacaoEmpenhoPK</class>
+    <class>_Entity.AnulacaoEmpenho</class>
+    <class>_Entity.AnulacaoEmpenhoPK</class>
 
-    <class>Entity.Banco</class>
-    <class>Entity.ContasBancarias</class>
-    <class>Entity.Agencia</class>
-    <class>Entity.AgenciaPK</class>
-    <class>Entity.ContasBancarias</class>
-    <class>Entity.ContasFonteRecurso</class>
-    <class>Entity.ContasFonteRecursoPK</class>
-    <class>Entity.ContasCA</class>
-    <class>Entity.ContasCAPK</class>
+    <class>_Entity.Banco</class>
+    <class>_Entity.ContasBancarias</class>
+    <class>_Entity.Agencia</class>
+    <class>_Entity.AgenciaPK</class>
+    <class>_Entity.ContasBancarias</class>
+    <class>_Entity.ContasFonteRecurso</class>
+    <class>_Entity.ContasFonteRecursoPK</class>
+    <class>_Entity.ContasCA</class>
+    <class>_Entity.ContasCAPK</class>
 
-    <class>Entity.AnulaReceita</class>
-    <class>Entity.AnulaReceitaPK</class>
-    <class>Entity.AnulaRecItens</class>
-    <class>Entity.AnulaRecItensPK</class>
-    <class>Entity.AnulaRecContaBanco</class>
-    <class>Entity.AnulaRecContaBancoPK</class>
+    <class>_Entity.AnulaReceita</class>
+    <class>_Entity.AnulaReceitaPK</class>
+    <class>_Entity.AnulaRecItens</class>
+    <class>_Entity.AnulaRecItensPK</class>
+    <class>_Entity.AnulaRecContaBanco</class>
+    <class>_Entity.AnulaRecContaBancoPK</class>
 
-    <class>Entity.AutPagto</class>
-    <class>Entity.AutPagtoPK</class>
-    <class>Entity.ItensAutPagto</class>
-    <class>Entity.ItensAutPagtoPK</class>
-    <class>Entity.AutPagtoFonteRec</class>
-    <class>Entity.AutPagtoFonteRecPK</class>
+    <class>_Entity.AutPagto</class>
+    <class>_Entity.AutPagtoPK</class>
+    <class>_Entity.ItensAutPagto</class>
+    <class>_Entity.ItensAutPagtoPK</class>
+    <class>_Entity.AutPagtoFonteRec</class>
+    <class>_Entity.AutPagtoFonteRecPK</class>
 
-    <class>Entity.DescontosOP</class>
-    <class>Entity.DescontosOPPK</class>
-    <class>Entity.DescontosPagto</class>
-    <class>Entity.DescontosPagtoPK</class>
+    <class>_Entity.DescontosOP</class>
+    <class>_Entity.DescontosOPPK</class>
+    <class>_Entity.DescontosPagto</class>
+    <class>_Entity.DescontosPagtoPK</class>
 
-    <class>Entity.DocPagto</class>
-    <class>Entity.DocPagtoPK</class>
+    <class>_Entity.DocPagto</class>
+    <class>_Entity.DocPagtoPK</class>
 
-    <class>Entity.GuiaReceita</class>
-    <class>Entity.GuiaReceitaPK</class>
-    <class>Entity.ItensGuiaReceita</class>
-    <class>Entity.ItensGuiaReceitaPK</class>
-    <class>Entity.RecContaBanco</class>
-    <class>Entity.RecContaBancoPK</class>
+    <class>_Entity.GuiaReceita</class>
+    <class>_Entity.GuiaReceitaPK</class>
+    <class>_Entity.ItensGuiaReceita</class>
+    <class>_Entity.ItensGuiaReceitaPK</class>
+    <class>_Entity.RecContaBanco</class>
+    <class>_Entity.RecContaBancoPK</class>
 
-    <class>Entity.Debito</class>
-    <class>Entity.DebitoPK</class>
-    <class>Entity.Credito</class>
-    <class>Entity.CreditoPK</class>
-    <class>Entity.SaidasCaixa</class>
-    <class>Entity.SaidasCaixaPK</class>
-    <class>Entity.EntradasCaixa</class>
-    <class>Entity.EntradasCaixaPK</class>
-    <class>Entity.Cheque</class>
-    <class>Entity.ChequePK</class>
+    <class>_Entity.Debito</class>
+    <class>_Entity.DebitoPK</class>
+    <class>_Entity.Credito</class>
+    <class>_Entity.CreditoPK</class>
+    <class>_Entity.SaidasCaixa</class>
+    <class>_Entity.SaidasCaixaPK</class>
+    <class>_Entity.EntradasCaixa</class>
+    <class>_Entity.EntradasCaixaPK</class>
+    <class>_Entity.Cheque</class>
+    <class>_Entity.ChequePK</class>
 
-    <class>Entity.Empenhos</class>
-    <class>Entity.EmpenhosPK</class>
-    <class>Entity.EmpFonteRecurso</class>
-    <class>Entity.EmpFonteRecursoPK</class>
-    <class>Entity.ItensEmpenho</class>
-    <class>Entity.ItensEmpenhoPK</class>
+    <class>_Entity.Empenhos</class>
+    <class>_Entity.EmpenhosPK</class>
+    <class>_Entity.EmpFonteRecurso</class>
+    <class>_Entity.EmpFonteRecursoPK</class>
+    <class>_Entity.ItensEmpenho</class>
+    <class>_Entity.ItensEmpenhoPK</class>
 
-    <class>Entity.LiquidacaoEmpenho</class>
-    <class>Entity.LiquidacaoEmpenhoPK</class>
-    <class>Entity.LiquidaPagto</class>
-    <class>Entity.LiquidaPagtoPK</class>
-    <class>Entity.Pagamentos</class>
-    <class>Entity.PagamentosPK</class>
+    <class>_Entity.LiquidacaoEmpenho</class>
+    <class>_Entity.LiquidacaoEmpenhoPK</class>
+    <class>_Entity.LiquidaPagto</class>
+    <class>_Entity.LiquidaPagtoPK</class>
+    <class>_Entity.Pagamentos</class>
+    <class>_Entity.PagamentosPK</class>
 
-    <class>Entity.OrdensPagto</class>
-    <class>Entity.OrdensPagtoPK</class>
-    <class>Entity.OPFonteRecurso</class>
-    <class>Entity.OPFonteRecursoPK</class>
-    <class>Entity.PagtoOP</class>
-    <class>Entity.PagtoOPPK</class>
+    <class>_Entity.OrdensPagto</class>
+    <class>_Entity.OrdensPagtoPK</class>
+    <class>_Entity.OPFonteRecurso</class>
+    <class>_Entity.OPFonteRecursoPK</class>
+    <class>_Entity.PagtoOP</class>
+    <class>_Entity.PagtoOPPK</class>
 
-    <class>Entity.LiquidaRestos</class>
-    <class>Entity.LiquidaRestosPK</class>
-    <class>Entity.LiqRestCronogra</class>
-    <class>Entity.LiqRestCronograPK</class>
-    <class>Entity.BaixaRestos</class>
-    <class>Entity.BaixaRestosPK</class>
+    <class>_Entity.LiquidaRestos</class>
+    <class>_Entity.LiquidaRestosPK</class>
+    <class>_Entity.LiqRestCronogra</class>
+    <class>_Entity.LiqRestCronograPK</class>
+    <class>_Entity.BaixaRestos</class>
+    <class>_Entity.BaixaRestosPK</class>
 
-    <class>Entity.ElemDespesa</class>
-    <class>Entity.ElemDespesaPK</class>
-    <class>Entity.ElemDespRecurso</class>
-    <class>Entity.ElemDespRecursoPK</class>
-    <class>Entity.ElemDespCA</class>
-    <class>Entity.ElemDespCAPK</class>
-    <class>Entity.ElemDespMensal</class>
-    <class>Entity.ElemDespMensalPK</class>
-    <class>Entity.TabDespesa</class>
-    <class>Entity.TabDespesaPK</class>
+    <class>_Entity.ElemDespesa</class>
+    <class>_Entity.ElemDespesaPK</class>
+    <class>_Entity.ElemDespRecurso</class>
+    <class>_Entity.ElemDespRecursoPK</class>
+    <class>_Entity.ElemDespCA</class>
+    <class>_Entity.ElemDespCAPK</class>
+    <class>_Entity.ElemDespMensal</class>
+    <class>_Entity.ElemDespMensalPK</class>
+    <class>_Entity.TabDespesa</class>
+    <class>_Entity.TabDespesaPK</class>
 
-    <class>Entity.Receitas</class>
-    <class>Entity.ReceitasPK</class>
-    <class>Entity.ReceitaFonteRecurso</class>
-    <class>Entity.ReceitaFonteRecursoPK</class>
-    <class>Entity.ReceitasCA</class>
-    <class>Entity.ReceitasCAPK</class>
-    <class>Entity.ReceitaMensal</class>
-    <class>Entity.ReceitaMensalPK</class>
-    <class>Entity.TabReceitas</class>
-    <class>Entity.TabReceitasPK</class>
+    <class>_Entity.Receitas</class>
+    <class>_Entity.ReceitasPK</class>
+    <class>_Entity.ReceitaFonteRecurso</class>
+    <class>_Entity.ReceitaFonteRecursoPK</class>
+    <class>_Entity.ReceitasCA</class>
+    <class>_Entity.ReceitasCAPK</class>
+    <class>_Entity.ReceitaMensal</class>
+    <class>_Entity.ReceitaMensalPK</class>
+    <class>_Entity.TabReceitas</class>
+    <class>_Entity.TabReceitasPK</class>
 
-    <class>Entity.RestosInscritos</class>
-    <class>Entity.RestosInscritosPK</class>
-    <class>Entity.RestosFonteRec</class>
-    <class>Entity.RestosFonteRecPK</class>
-    <class>Entity.RestosProcParc</class>
-    <class>Entity.RestosProcParcPK</class>
+    <class>_Entity.RestosInscritos</class>
+    <class>_Entity.RestosInscritosPK</class>
+    <class>_Entity.RestosFonteRec</class>
+    <class>_Entity.RestosFonteRecPK</class>
+    <class>_Entity.RestosProcParc</class>
+    <class>_Entity.RestosProcParcPK</class>
 
     <properties>
         <property name="dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
@@ -128,117 +128,117 @@
 
 </persistence-unit>
 
-<persistence-unit name="3Hearts">
+<persistence-unit name="Cidades.3Hearts">
 
-    <class>Entity.AnulacaoEmpenho</class>
-    <class>Entity.AnulacaoEmpenhoPK</class>
+    <class>_Entity.AnulacaoEmpenho</class>
+    <class>_Entity.AnulacaoEmpenhoPK</class>
 
-    <class>Entity.Banco</class>
-    <class>Entity.ContasBancarias</class>
-    <class>Entity.Agencia</class>
-    <class>Entity.AgenciaPK</class>
-    <class>Entity.ContasBancarias</class>
-    <class>Entity.ContasFonteRecurso</class>
-    <class>Entity.ContasFonteRecursoPK</class>
-    <class>Entity.ContasCA</class>
-    <class>Entity.ContasCAPK</class>
+    <class>_Entity.Banco</class>
+    <class>_Entity.ContasBancarias</class>
+    <class>_Entity.Agencia</class>
+    <class>_Entity.AgenciaPK</class>
+    <class>_Entity.ContasBancarias</class>
+    <class>_Entity.ContasFonteRecurso</class>
+    <class>_Entity.ContasFonteRecursoPK</class>
+    <class>_Entity.ContasCA</class>
+    <class>_Entity.ContasCAPK</class>
 
-    <class>Entity.AnulaReceita</class>
-    <class>Entity.AnulaReceitaPK</class>
-    <class>Entity.AnulaRecItens</class>
-    <class>Entity.AnulaRecItensPK</class>
-    <class>Entity.AnulaRecContaBanco</class>
-    <class>Entity.AnulaRecContaBancoPK</class>
+    <class>_Entity.AnulaReceita</class>
+    <class>_Entity.AnulaReceitaPK</class>
+    <class>_Entity.AnulaRecItens</class>
+    <class>_Entity.AnulaRecItensPK</class>
+    <class>_Entity.AnulaRecContaBanco</class>
+    <class>_Entity.AnulaRecContaBancoPK</class>
 
-    <class>Entity.AutPagto</class>
-    <class>Entity.AutPagtoPK</class>
-    <class>Entity.ItensAutPagto</class>
-    <class>Entity.ItensAutPagtoPK</class>
-    <class>Entity.AutPagtoFonteRec</class>
-    <class>Entity.AutPagtoFonteRecPK</class>
+    <class>_Entity.AutPagto</class>
+    <class>_Entity.AutPagtoPK</class>
+    <class>_Entity.ItensAutPagto</class>
+    <class>_Entity.ItensAutPagtoPK</class>
+    <class>_Entity.AutPagtoFonteRec</class>
+    <class>_Entity.AutPagtoFonteRecPK</class>
 
-    <class>Entity.DescontosOP</class>
-    <class>Entity.DescontosOPPK</class>
-    <class>Entity.DescontosPagto</class>
-    <class>Entity.DescontosPagtoPK</class>
+    <class>_Entity.DescontosOP</class>
+    <class>_Entity.DescontosOPPK</class>
+    <class>_Entity.DescontosPagto</class>
+    <class>_Entity.DescontosPagtoPK</class>
 
-    <class>Entity.DocPagto</class>
-    <class>Entity.DocPagtoPK</class>
+    <class>_Entity.DocPagto</class>
+    <class>_Entity.DocPagtoPK</class>
 
-    <class>Entity.GuiaReceita</class>
-    <class>Entity.GuiaReceitaPK</class>
-    <class>Entity.ItensGuiaReceita</class>
-    <class>Entity.ItensGuiaReceitaPK</class>
-    <class>Entity.RecContaBanco</class>
-    <class>Entity.RecContaBancoPK</class>
+    <class>_Entity.GuiaReceita</class>
+    <class>_Entity.GuiaReceitaPK</class>
+    <class>_Entity.ItensGuiaReceita</class>
+    <class>_Entity.ItensGuiaReceitaPK</class>
+    <class>_Entity.RecContaBanco</class>
+    <class>_Entity.RecContaBancoPK</class>
 
-    <class>Entity.Debito</class>
-    <class>Entity.DebitoPK</class>
-    <class>Entity.Credito</class>
-    <class>Entity.CreditoPK</class>
-    <class>Entity.SaidasCaixa</class>
-    <class>Entity.SaidasCaixaPK</class>
-    <class>Entity.EntradasCaixa</class>
-    <class>Entity.EntradasCaixaPK</class>
-    <class>Entity.Cheque</class>
-    <class>Entity.ChequePK</class>
+    <class>_Entity.Debito</class>
+    <class>_Entity.DebitoPK</class>
+    <class>_Entity.Credito</class>
+    <class>_Entity.CreditoPK</class>
+    <class>_Entity.SaidasCaixa</class>
+    <class>_Entity.SaidasCaixaPK</class>
+    <class>_Entity.EntradasCaixa</class>
+    <class>_Entity.EntradasCaixaPK</class>
+    <class>_Entity.Cheque</class>
+    <class>_Entity.ChequePK</class>
 
-    <class>Entity.Empenhos</class>
-    <class>Entity.EmpenhosPK</class>
-    <class>Entity.EmpFonteRecurso</class>
-    <class>Entity.EmpFonteRecursoPK</class>
-    <class>Entity.ItensEmpenho</class>
-    <class>Entity.ItensEmpenhoPK</class>
+    <class>_Entity.Empenhos</class>
+    <class>_Entity.EmpenhosPK</class>
+    <class>_Entity.EmpFonteRecurso</class>
+    <class>_Entity.EmpFonteRecursoPK</class>
+    <class>_Entity.ItensEmpenho</class>
+    <class>_Entity.ItensEmpenhoPK</class>
 
-    <class>Entity.LiquidacaoEmpenho</class>
-    <class>Entity.LiquidacaoEmpenhoPK</class>
-    <class>Entity.LiquidaPagto</class>
-    <class>Entity.LiquidaPagtoPK</class>
-    <class>Entity.Pagamentos</class>
-    <class>Entity.PagamentosPK</class>
+    <class>_Entity.LiquidacaoEmpenho</class>
+    <class>_Entity.LiquidacaoEmpenhoPK</class>
+    <class>_Entity.LiquidaPagto</class>
+    <class>_Entity.LiquidaPagtoPK</class>
+    <class>_Entity.Pagamentos</class>
+    <class>_Entity.PagamentosPK</class>
 
-    <class>Entity.OrdensPagto</class>
-    <class>Entity.OrdensPagtoPK</class>
-    <class>Entity.OPFonteRecurso</class>
-    <class>Entity.OPFonteRecursoPK</class>
-    <class>Entity.PagtoOP</class>
-    <class>Entity.PagtoOPPK</class>
+    <class>_Entity.OrdensPagto</class>
+    <class>_Entity.OrdensPagtoPK</class>
+    <class>_Entity.OPFonteRecurso</class>
+    <class>_Entity.OPFonteRecursoPK</class>
+    <class>_Entity.PagtoOP</class>
+    <class>_Entity.PagtoOPPK</class>
 
-    <class>Entity.LiquidaRestos</class>
-    <class>Entity.LiquidaRestosPK</class>
-    <class>Entity.LiqRestCronogra</class>
-    <class>Entity.LiqRestCronograPK</class>
-    <class>Entity.BaixaRestos</class>
-    <class>Entity.BaixaRestosPK</class>
+    <class>_Entity.LiquidaRestos</class>
+    <class>_Entity.LiquidaRestosPK</class>
+    <class>_Entity.LiqRestCronogra</class>
+    <class>_Entity.LiqRestCronograPK</class>
+    <class>_Entity.BaixaRestos</class>
+    <class>_Entity.BaixaRestosPK</class>
 
-    <class>Entity.ElemDespesa</class>
-    <class>Entity.ElemDespesaPK</class>
-    <class>Entity.ElemDespRecurso</class>
-    <class>Entity.ElemDespRecursoPK</class>
-    <class>Entity.ElemDespCA</class>
-    <class>Entity.ElemDespCAPK</class>
-    <class>Entity.ElemDespMensal</class>
-    <class>Entity.ElemDespMensalPK</class>
-    <class>Entity.TabDespesa</class>
-    <class>Entity.TabDespesaPK</class>
+    <class>_Entity.ElemDespesa</class>
+    <class>_Entity.ElemDespesaPK</class>
+    <class>_Entity.ElemDespRecurso</class>
+    <class>_Entity.ElemDespRecursoPK</class>
+    <class>_Entity.ElemDespCA</class>
+    <class>_Entity.ElemDespCAPK</class>
+    <class>_Entity.ElemDespMensal</class>
+    <class>_Entity.ElemDespMensalPK</class>
+    <class>_Entity.TabDespesa</class>
+    <class>_Entity.TabDespesaPK</class>
 
-    <class>Entity.Receitas</class>
-    <class>Entity.ReceitasPK</class>
-    <class>Entity.ReceitaFonteRecurso</class>
-    <class>Entity.ReceitaFonteRecursoPK</class>
-    <class>Entity.ReceitasCA</class>
-    <class>Entity.ReceitasCAPK</class>
-    <class>Entity.ReceitaMensal</class>
-    <class>Entity.ReceitaMensalPK</class>
-    <class>Entity.TabReceitas</class>
-    <class>Entity.TabReceitasPK</class>
+    <class>_Entity.Receitas</class>
+    <class>_Entity.ReceitasPK</class>
+    <class>_Entity.ReceitaFonteRecurso</class>
+    <class>_Entity.ReceitaFonteRecursoPK</class>
+    <class>_Entity.ReceitasCA</class>
+    <class>_Entity.ReceitasCAPK</class>
+    <class>_Entity.ReceitaMensal</class>
+    <class>_Entity.ReceitaMensalPK</class>
+    <class>_Entity.TabReceitas</class>
+    <class>_Entity.TabReceitasPK</class>
 
-    <class>Entity.RestosInscritos</class>
-    <class>Entity.RestosInscritosPK</class>
-    <class>Entity.RestosFonteRec</class>
-    <class>Entity.RestosFonteRecPK</class>
-    <class>Entity.RestosProcParc</class>
-    <class>Entity.RestosProcParcPK</class>
+    <class>_Entity.RestosInscritos</class>
+    <class>_Entity.RestosInscritosPK</class>
+    <class>_Entity.RestosFonteRec</class>
+    <class>_Entity.RestosFonteRecPK</class>
+    <class>_Entity.RestosProcParc</class>
+    <class>_Entity.RestosProcParcPK</class>
 
     <properties>
         <property name="dialect" value="org.hibernate.dialect.Oracle10gDialect"/>

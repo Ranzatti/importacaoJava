@@ -9,6 +9,7 @@
         <module name="TresCoracoes" />
         <module name="Louveira-JPA" />
         <module name="Importacao" />
+        <module name="importacaoJava" />
       </profile>
     </annotationProcessing>
   </component>
