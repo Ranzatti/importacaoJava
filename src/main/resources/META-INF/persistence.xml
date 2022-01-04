@@ -121,14 +121,13 @@
         <property name="hibernate.connection.username" value="PMLO"/>
         <property name="hibernate.connection.password" value="sicsadm"/>
         <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521/LOCAL"/>
-        <property name="hibernate.hbm2ddl.auto" value="none"/>
         <property name="hibernate.show_sql" value="false"/>
         <property name="hibernate.format_sql" value="false"/>
     </properties>
 
 </persistence-unit>
 
-<persistence-unit name="Cidades.3Hearts">
+<persistence-unit name="TresCoracoes">
 
     <class>_Entity.AnulacaoEmpenho</class>
     <class>_Entity.AnulacaoEmpenhoPK</class>
@@ -246,7 +245,6 @@
         <property name="hibernate.connection.username" value="PM3H"/>
         <property name="hibernate.connection.password" value="sicsadm"/>
         <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521/LOCAL"/>
-        <property name="hibernate.hbm2ddl.auto" value="none"/>
         <property name="hibernate.show_sql" value="false"/>
         <property name="hibernate.format_sql" value="false"/>
     </properties>
