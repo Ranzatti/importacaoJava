@@ -1,16 +1,28 @@
-package bean;
+package _Entity;
 
-import java.sql.Date;
+import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.io.Serializable;
+import java.util.Date;
 
-public class EmpenhoComplemento {
+@Embeddable
+public class EmpenhoComplementoPK implements Serializable {
 
+	@Temporal(TemporalType.DATE)
 	private Date ano;
-	private int empenho;
-	private int complemento;
-	private Date data;
-	private int lancamento;
-	private String descricao;
-	private double valor;
+
+	private Integer empenho;
+	private Integer complemento;
+
+	public EmpenhoComplementoPK() {
+	}
+
+	public EmpenhoComplementoPK(Date ano, Integer empenho, Integer complemento) {
+		this.ano = ano;
+		this.empenho = empenho;
+		this.complemento = complemento;
+	}
 
 	public Date getAno() {
 		return ano;
@@ -20,52 +32,19 @@ public class EmpenhoComplemento {
 		this.ano = ano;
 	}
 
-	public int getEmpenho() {
+	public Integer getEmpenho() {
 		return empenho;
 	}
 
-	public void setEmpenho(int empenho) {
+	public void setEmpenho(Integer empenho) {
 		this.empenho = empenho;
 	}
 
-	public int getComplemento() {
+	public Integer getComplemento() {
 		return complemento;
 	}
 
-	public void setComplemento(int complemento) {
+	public void setComplemento(Integer complemento) {
 		this.complemento = complemento;
 	}
-
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
-	}
-
-	public int getLancamento() {
-		return lancamento;
-	}
-
-	public void setLancamento(int lancamento) {
-		this.lancamento = lancamento;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public double getValor() {
-		return valor;
-	}
-
-	public void setValor(double valor) {
-		this.valor = valor;
-	}
-
 }

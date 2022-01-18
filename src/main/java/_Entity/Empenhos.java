@@ -22,12 +22,13 @@ public class Empenhos implements Serializable {
     private Integer lancamento;
     private String desdobramento;
     private BigDecimal valorEmpenho;
+    private Integer classeDespesa;
 
     public Empenhos() {
         this.id = new EmpenhosPK();
     }
 
-    public Empenhos(Date ano, Integer empenho, String tipo, Integer ficha, Date dataEmpenho, Integer fornecedor, String desdobramento, BigDecimal valorEmpenho) {
+    public Empenhos(Date ano, Integer empenho, String tipo, Integer ficha, Date dataEmpenho, Integer fornecedor, String desdobramento, Integer classeDespesa, BigDecimal valorEmpenho) {
         this.id = new EmpenhosPK(ano, empenho);
         this.tipo = tipo;
         this.ficha = ficha;
@@ -36,6 +37,7 @@ public class Empenhos implements Serializable {
         this.fornecedor = fornecedor;
         this.desdobramento = desdobramento;
         this.valorEmpenho = valorEmpenho;
+        this.classeDespesa = classeDespesa;
     }
 
     public EmpenhosPK getId() {
@@ -100,5 +102,13 @@ public class Empenhos implements Serializable {
 
     public void setLancamento(Integer lancamento) {
         this.lancamento = lancamento;
+    }
+
+    public Integer getClasseDespesa() {
+        return classeDespesa;
+    }
+
+    public void setClasseDespesa(Integer classeDespesa) {
+        this.classeDespesa = classeDespesa;
     }
 }

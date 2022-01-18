@@ -1,4 +1,4 @@
-package Cidades.Louveira;
+package Cidades.TresCoracoes;
 
 import _Entity.*;
 import _Infra.Util;
@@ -16,14 +16,16 @@ public class ImportaContasBancarias extends Util {
 
     public static void main(String[] args) {
 
-        EntityManager emLocal = conexaoDestino("louveira");
+        EntityManager emLocal = conexaoDestino("TresCoracoes");
 
-        Connection con = conexaoOrigemOracle();
+        Connection con = conexaoOrigemSQLServer();
         PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
         ResultSet rs = null;
+        ResultSet rs2 = null;
 
-        int bancoCodigo, ficha, fonteRecurso, caFixo, caVariavel, empresa;
-        String agenciaCodigo, conta, nome, dv, tipo, codAplicacao;
+        Integer seqConta, bancoCodigo, ficha, fonteRecurso, versaoRecurso, empresa, anoFonte;
+        String agenciaCodigo, conta, nome, dv, tipo, titular;
         Date abertura, encerramento;
 
         delete("CBPBANCOS");
@@ -35,93 +37,171 @@ public class ImportaContasBancarias extends Util {
         emLocal.getTransaction().begin();
 
         System.out.println("INICIANDO IMPORTAÇÃO CONTAS BANCARIAS ");
+
         try {
             // Bancos
             stmt = con.prepareStatement(
-                    "select BCO_COD, BCO_DSC " +
-                            " from bancos " +
-                            " ORDER BY 1");
+                    "SELECT " +
+                            "    COD_BANCO, " +
+                            "    NOM_BANCO " +
+                            "FROM " +
+                            "    dbo.CT_BANCO " +
+                            "WHERE " +
+                            "    COD_BANCO >= '001' " +
+                            "AND COD_BANCO < '999' ");
             rs = stmt.executeQuery();
             while (rs.next()) {
                 bancoCodigo = rs.getInt(1);
                 nome = rs.getString(2).trim().toUpperCase();
 
-                Banco banco = new Banco(bancoCodigo, nome);
-                emLocal.persist(banco);
+                nome = nome.length() > 50 ? nome.substring(0, 50) : nome;
+
+                Banco banco = emLocal.find(Banco.class, bancoCodigo);
+
+                if (Objects.isNull(banco)) {
+                    banco = new Banco(bancoCodigo, nome);
+                    emLocal.persist(banco);
+                }
             }
             stmt.close();
             rs.close();
 
             // Agencias
             stmt = con.prepareStatement(
-                    "select B.BCO_COD, A.AGE_COD, A.AGE_DSC " +
-                            " from AGENCIAS A " +
-                            " JOIN BANCOS B ON ( A.AGE_BCO_SEQ = B.BCO_SEQ )" +
-                            " order by 1, 2");
+                    "SELECT " +
+                            "    COD_BANCO, " +
+                            "    NRO_AGENCIA, " +
+                            "    NOM_AGENCIA " +
+                            "FROM " +
+                            "    dbo.CT_AGENCIA a " +
+                            "JOIN " +
+                            "    dbo.CT_BANCO b " +
+                            "ON " +
+                            "    ( a.SEQ_GG_BANCO = b.SEQ_GG_BANCO)");
             rs = stmt.executeQuery();
             while (rs.next()) {
                 bancoCodigo = rs.getInt(1);
-                agenciaCodigo = rs.getString(2);
+                agenciaCodigo = rs.getString(2).trim();
                 nome = rs.getString(3).trim().toUpperCase();
 
-                Agencia agencia = new Agencia(bancoCodigo, agenciaCodigo, nome);
-                emLocal.persist(agencia);
+                nome = nome.length() > 50 ? nome.substring(0, 50) : nome;
+
+                Agencia agencia = emLocal.find(Agencia.class, new AgenciaPK(bancoCodigo, agenciaCodigo));
+
+                if(Objects.isNull(agencia)) {
+                    agencia = new Agencia(bancoCodigo, agenciaCodigo, nome);
+                    emLocal.persist(agencia);
+                }
             }
             stmt.close();
             rs.close();
 
             // Contas Bancárias
             stmt = con.prepareStatement(
-                    "select C.BCO_COD, B.AGE_COD, A.CBN_NRO, A.CBN_DIG_CTA, A.CBN_COD, A.CBN_DSC, A.CBN_TPO, A.CBN_DTA_ABT, A.CBN_DTA_ENC, D.FRE_COD, COALESCE(E.FON_COD, '11000'), F.OGO_COD_AUD " +
-                            "from CONTAS_BANCARIAS A" +
-                            "        JOIN AGENCIAS B ON ( A.CBN_AGE_SEQ = B.AGE_SEQ ) " +
-                            "        JOIN BANCOS C ON ( B.AGE_BCO_SEQ = C.BCO_SEQ ) " +
-                            "        left JOIN FONTE_DE_RECURSO D ON ( A.CBN_FRE_SEQ = D.FRE_SEQ ) " +
-                            "        left JOIN FONTES_DE_RECURSO_APLICACAO E ON ( A.CBN_FON_SEQ = E.FON_SEQ ) " +
-                            "        join ORGAOS_2004 F ON ( A.CBN_OGO_SEQ = F.OGO_SEQ ) " +
-                            "where CBN_TPO > 1 " +
-                            "order by A.CBN_NRO ");
+                    "SELECT " +
+                            "    SEQ_CT_CONTA, " +
+                            "    CASE " +
+                            "          WHEN COD_BANCO = 'CEF' then '104' " +
+                            "          ELSE COD_BANCO END as COD_BANCO, " +
+                            "    NRO_CONTA_AGENCIA, " +
+                            "    NRO_CONTA, " +
+                            "    NRO_CONTA_REDUZIDO, " +
+                            "    NOM_CONTA, " +
+                            "    SBL_CONTA_TIPO, " +
+                            "    DAT_CONTA_CRIACAO, " +
+                            "    DAT_CONTA_INATIVACAO, " +
+                            "    SEQ_GG_EMPRESA, " +
+                            "    NOM_UNIDADE_GESTORA " +
+                            "FROM " +
+                            "    VW_CT_CONTA " +
+                            "WHERE " +
+                            "    SEQ_CT_UNIDADE_GESTORA = 21 " +
+                            "ORDER by NRO_CONTA_REDUZIDO");
             rs = stmt.executeQuery();
             while (rs.next()) {
-                bancoCodigo = rs.getInt(1);
-                agenciaCodigo = rs.getString(2).trim();
-                conta = rs.getString(3).trim();
-                dv = rs.getString(4).trim();
-                ficha = Integer.parseInt(rs.getString(5));
+                seqConta = rs.getInt(1);
+                bancoCodigo = rs.getInt(2);
+                agenciaCodigo = rs.getString(3).trim();
+                conta = rs.getString(4).trim();
+                ficha = rs.getInt(5);
                 nome = rs.getString(6).trim().toUpperCase();
-                tipo = Integer.toString(rs.getInt(7));
+                tipo = rs.getString(7);
                 abertura = rs.getDate(8);
                 encerramento = rs.getDate(9);
-                fonteRecurso = rs.getInt(10);
-                codAplicacao = rs.getString(11);
-                empresa = rs.getInt(12);
+                empresa = rs.getInt(10);
+                titular = rs.getString(11);
 
-                caFixo = Integer.parseInt(codAplicacao.substring(0, 3));
-                caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
+                nome = nome.length() > 250 ? nome.substring(0, 250) : nome;
+                titular = titular.length() > 50 ? titular.substring(0, 50) : titular;
+
+
+                if (encerramento.after(java.sql.Date.valueOf("9999-01-01"))) {
+                    encerramento = null;
+                }
 
                 System.out.println("Ficha: " + ficha);
 
-                tipo = tipo.equals("2") ? "M" : tipo;
-                tipo = tipo.equals("5") ? "V" : tipo;
-                tipo = tipo.equals("6") ? "E" : tipo;
-                tipo = tipo.equals("13") ? "P" : tipo;
-
-                if (tipo.length() > 1) {
-                    tipo = "M";
+                switch (tipo) {
+                    case "11":
+                        tipo = "M";
+                        break;
+                    case "12":
+                    case "13":
+                    case "14":
+                    case "15":
+                        tipo = "V";
+                        break;
+                    case "16":
+                        tipo = "A";
+                        break;
+                    default:
+                        tipo = "";
+                        break;
                 }
 
                 ContasBancarias contas = emLocal.find(ContasBancarias.class, ficha);
 
                 if (Objects.isNull(contas)) {
-                    ContasBancarias contasBancarias = new ContasBancarias(ficha, bancoCodigo, agenciaCodigo, conta, dv, nome, tipo, "Prefeitura Municipal de Cidades.Louveira",
-                            bancoCodigo, agenciaCodigo, conta, empresa, encerramento, abertura);
+                    ContasBancarias contasBancarias = new ContasBancarias(ficha, bancoCodigo, agenciaCodigo, conta, "", nome, tipo, titular, bancoCodigo, agenciaCodigo, conta, empresa, encerramento, abertura);
                     emLocal.persist(contasBancarias);
 
-                    ContasFonteRecurso contasFonteRecurso = new ContasFonteRecurso(ficha, 1, fonteRecurso, BigDecimal.ZERO);
-                    emLocal.persist(contasFonteRecurso);
+                    stmt2 = con.prepareStatement(
+                            "SELECT " +
+                                    "    ANO_CONTA_FONTE_RECURSO, " +
+                                    "    B.COD_FONTE_RECURSO " +
+                                    "FROM " +
+                                    "    dbo.CT_CONTA_FONTE_RECURSO A " +
+                                    "JOIN " +
+                                    "    dbo.CT_FONTE_RECURSO B " +
+                                    "ON " +
+                                    "    (A.SEQ_CT_FONTE_RECURSO = B.SEQ_CT_FONTE_RECURSO) " +
+                                    "WHERE " +
+                                    "    SEQ_CT_CONTA = ? " +
+                                    "ORDER BY 1, 2 ");
+                    stmt2.setInt(1, seqConta);
+                    rs2 = stmt2.executeQuery();
+                    while (rs2.next()) {
+                        anoFonte = rs2.getInt(1);
+                        fonteRecurso = rs2.getInt(2);
 
-                    ContasCA contasCA = new ContasCA(ficha, 1, fonteRecurso, caFixo, caVariavel, BigDecimal.ZERO);
-                    emLocal.persist(contasCA);
+                        versaoRecurso = getVersao(anoFonte);
+
+                        System.out.println("Conta: " + conta +  " - Fonte: " + fonteRecurso);
+
+                        ContasFonteRecurso contasFonteRecurso = emLocal.find(ContasFonteRecurso.class, new ContasFonteRecursoPK(ficha, versaoRecurso, fonteRecurso));
+
+                        if(Objects.isNull(contasFonteRecurso)) {
+                            contasFonteRecurso = new ContasFonteRecurso(ficha, versaoRecurso, fonteRecurso, BigDecimal.ZERO);
+                            emLocal.persist(contasFonteRecurso);
+                        }
+
+                        ContasCA contasCA = emLocal.find(ContasCA.class, new ContasCAPK(ficha, versaoRecurso, fonteRecurso, 999, 0));
+
+                        if(Objects.isNull(contasCA)) {
+                            contasCA = new ContasCA(ficha, versaoRecurso, fonteRecurso, 999, 0, BigDecimal.ZERO);
+                            emLocal.persist(contasCA);
+                        }
+                    }
                 }
             }
             stmt.close();

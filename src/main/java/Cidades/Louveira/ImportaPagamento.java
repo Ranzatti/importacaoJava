@@ -158,7 +158,7 @@ public class ImportaPagamento extends Util {
                             updatePagamento(emLocal, anoDocumento, tipoDoc, documento, parcela, dataPagamento, valorPago, valorDesconto);
 
                             // Pegando Desconto
-                            if ((valorDesconto.signum() > 0)) {
+                            if (valorDesconto.signum() > 0) {
                                 desconto(con, emLocal, anoAtual, tipoDoc, documento, parcela, dataPagamento, autorizacao, iopSeq);
                             }
 

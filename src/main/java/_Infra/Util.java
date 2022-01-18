@@ -6,7 +6,7 @@ import javax.persistence.Persistence;
 import java.sql.*;
 import java.util.Date;
 
-public class Util{
+public class Util {
 
     private static EntityManagerFactory emfLocal;
     private static EntityManager emLocal;
@@ -35,6 +35,7 @@ public class Util{
             return null;
         }
     }
+
     public static Connection conexaoOrigemSQLServer() {
 
         Connection conAux;
@@ -47,6 +48,35 @@ public class Util{
             System.err.println("Erro de conexão no banco" + ex);
             return null;
         }
+    }
+
+    public static Integer getVersao(Integer ano) {
+        Integer versao = 0;
+
+        switch (ano) {
+            case 2012:
+            case 2013:
+            case 2014:
+            case 2015:
+            case 2016:
+            case 2017:
+            case 2018:
+                versao = 1;
+                break;
+            case 2019:
+                versao = 2;
+                break;
+            case 2020:
+                versao = 3;
+                break;
+            case 2021:
+                versao = 4;
+                break;
+            case 2022:
+                versao = 5;
+                break;
+        }
+        return versao;
     }
 
     public static void closeConexao(Connection con, PreparedStatement stmt, ResultSet rs) {

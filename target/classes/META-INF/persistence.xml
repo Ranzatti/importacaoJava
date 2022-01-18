@@ -188,6 +188,8 @@
     <class>_Entity.EmpFonteRecursoPK</class>
     <class>_Entity.ItensEmpenho</class>
     <class>_Entity.ItensEmpenhoPK</class>
+    <class>_Entity.EmpenhoComplemento</class>
+    <class>_Entity.EmpenhoComplementoPK</class>
 
     <class>_Entity.LiquidacaoEmpenho</class>
     <class>_Entity.LiquidacaoEmpenhoPK</class>

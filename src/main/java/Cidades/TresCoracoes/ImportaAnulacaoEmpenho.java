@@ -1,4 +1,4 @@
-package Cidades.Louveira;
+package Cidades.TresCoracoes;
 
 import _Entity.AnulacaoEmpenho;
 import _Infra.Util;
@@ -15,14 +15,14 @@ import java.util.Date;
 public class ImportaAnulacaoEmpenho extends Util {
 
     public static void main(String[] args) {
-        init(2016);
+        init(2021);
     }
 
     public static void init(int anoSonner) {
 
-        EntityManager emLocal = conexaoDestino("louveira");
+        EntityManager emLocal = conexaoDestino("TresCoracoes");
 
-        Connection con = conexaoOrigemOracle();
+        Connection con = conexaoOrigemSQLServer();
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
@@ -43,17 +43,17 @@ public class ImportaAnulacaoEmpenho extends Util {
         System.out.println("INICIANDO IMPORTAÇÃO ANULAÇÂO EMPENHOS: " + anoSonner);
         try {
             stmt = con.prepareStatement(
-                    "select B.EMN_NRO, A.ANE_DTA, A.ANE_HIS, A.ANE_VLR " +
-                            " from ANULACOES_DAS_DESPESAS A " +
-                            " join EMPENHOS B ON ( A.ANE_EMN_SEQ = B.EMN_SEQ ) " +
-                            " where B.EMN_EXE = ? " +
-                            " order by 1, 2 ");
+                    "SELECT NRO_EMPENHO_ANULADO, DAT_EMPENHO_ANULADO, HST_EMPENHO_ANULADO, VLR_EMPENHO_ANULADO " +
+                            "FROM DBO.CT_EMPENHO_ANULADO " +
+                            "WHERE ANO_EMPENHO_ANULADO = ? " +
+                            "and SEQ_CT_UNIDADE_GESTORA = 21" +
+                            "order by 1 ");
             stmt.setInt(1, anoSonner);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 empenho = rs.getInt(1);
                 data = rs.getDate(2);
-                historico = rs.getString(3).trim();
+                historico = rs.getString(3).trim().toUpperCase();
                 valor = rs.getBigDecimal(4);
 
                 System.out.println("Ano: " + anoSonner + " - Empenho: " + empenho);

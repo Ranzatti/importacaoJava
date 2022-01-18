@@ -97,7 +97,7 @@ public class ImportaEmpenhos extends Util {
 
                 System.out.println("Ano: " + anoSonner + " - Empenho: " + empenho);
 
-                Empenhos empenhos = new Empenhos(anoAtual, empenho, tipoEmpenho, ficha, dataEmpenho, fornecedor, desdobramento, valorEmpenho);
+                Empenhos empenhos = new Empenhos(anoAtual, empenho, tipoEmpenho, ficha, dataEmpenho, fornecedor, desdobramento, 0, valorEmpenho);
                 emLocal.persist(empenhos);
 
                 EmpFonteRecurso empFonteRecurso = new EmpFonteRecurso(anoAtual, empenho, 1, fonteRecurso, caFixo, caVariavel, valorEmpenho);

@@ -15,7 +15,7 @@ public class ElemDespRecurso implements Serializable {
     private ElemDespRecursoPK id;
     private BigDecimal orcado;
 
-    public ElemDespRecurso(Date anoAtual, Integer ficha, Integer i, Integer fonteRecurso) {
+    public ElemDespRecurso() {
         this.id = new ElemDespRecursoPK();
     }
 
