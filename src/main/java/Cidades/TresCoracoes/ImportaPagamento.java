@@ -20,6 +20,10 @@ public class ImportaPagamento extends Util {
     }
 
     public static void init(int anoSonner) {
+
+        final String ORDEMPAGTO = "O";
+        final String EMPENHO = "E";
+
         EntityManager emLocal = conexaoDestino("TresCoracoes");
 
         Connection con = conexaoOrigemSQLServer();
@@ -29,9 +33,10 @@ public class ImportaPagamento extends Util {
         ResultSet rs2 = null;
 
         String teste, historicoLiquidacao, historicoPagamento;
-        Integer seqPagamento, autorizacao, empenho, liquidacao, parcela, versaoRecurso;
+        Integer seqPagamento, autorizacao, empenho, liquidacao, parcela, nroOP, fichaConta, versaoRecurso, fonteRecurso, fornecedor;
         BigDecimal valorLiquidacao, valorParcela, valorPago, valorDesconto;
         Date anoAtual, dataAutorizacao, dataPagamento, dataLiquidacao, vencimento;
+        boolean empenhos, ordemPagamento;
 
         anoAtual = java.sql.Date.valueOf(anoSonner + "-01-01");
 
@@ -41,98 +46,186 @@ public class ImportaPagamento extends Util {
 
         emLocal.getTransaction().begin();
 
+        empenhos = false;
+        ordemPagamento = true;
+
         teste = "";
         //teste = "and NRO_EMPENHO in(1) ";
 
-        System.out.println("INICIANDO IMPORTAÇÃO PAGAMENTOS: " + anoSonner);
         try {
-            stmt = con.prepareStatement(
-                    "SELECT DISTINCT " +
-                            "    SEQ_CT_PAGAMENTO, " +
-                            "    NRO_PAGAMENTO_ORDEM, " +
-                            "    DAT_PAGAMENTO_ORDEM, " +
-                            "    DAT_PAGAMENTO, " +
-                            "    NRO_EMPENHO, " +
-                            "    NRO_LIQUIDACAO_EMPENHO, " +
-                            "    DAT_LIQUIDACAO, " +
-                            "    DAT_PAGAMENTO_VENCIMENTO, " +
-                            "    VLR_LIQUIDACAO, " +
-                            "    VLR_PAGAMENTO, " +
-                            "    coalesce(VLR_PAGAMENTO_DESCONTO, 0) as VLR_PAGAMENTO_DESCONTO, " +
-                            "    VLR_PAGAMENTO_LIQUIDO, " +
-                            "    HST_LIQUIDACAO " +
-                            "    HST_PAGAMENTO " +
-                            "FROM " +
-                            "    dbo.VW_CT_PAGAMENTO " +
-                            "WHERE " +
-                            "    ANO_PAGAMENTO = ? " +
-                            "AND ANO_PAGAMENTO_ORDEM = ANO_PAGAMENTO " +
-                            "AND ANO_EMPENHO = ANO_PAGAMENTO " +
-                            "AND SEQ_CT_UNIDADE_GESTORA = 21 " + teste +
-                            "ORDER BY " +
-                            "    NRO_PAGAMENTO_ORDEM ");
-            stmt.setInt(1, anoSonner);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                seqPagamento = rs.getInt(1);
-                autorizacao = rs.getInt(2);
-                dataAutorizacao = rs.getDate(3);
-                dataPagamento = rs.getDate(4);
-                empenho = rs.getInt(5);
-                liquidacao = rs.getInt(6);
-                dataLiquidacao = rs.getDate(7);
-                vencimento = rs.getDate(8);
-                valorLiquidacao = rs.getBigDecimal(9);
-                valorParcela = rs.getBigDecimal(10);
-                valorDesconto = rs.getBigDecimal(11);
-                valorPago = rs.getBigDecimal(12);
-                historicoLiquidacao = rs.getString(13).trim().toUpperCase();
-                historicoPagamento = rs.getString(13).trim().toUpperCase();
+            if (empenhos) {
+                System.out.println("INICIANDO IMPORTAÇÃO PAGAMENTOS - EMPENHOS " + anoSonner);
+                stmt = con.prepareStatement(
+                        "SELECT DISTINCT " +
+                                "    SEQ_CT_PAGAMENTO, " +
+                                "    NRO_PAGAMENTO_ORDEM, " +
+                                "    DAT_PAGAMENTO_ORDEM, " +
+                                "    DAT_PAGAMENTO, " +
+                                "    NRO_EMPENHO, " +
+                                "    NRO_LIQUIDACAO_EMPENHO, " +
+                                "    DAT_LIQUIDACAO, " +
+                                "    DAT_PAGAMENTO_VENCIMENTO, " +
+                                "    VLR_LIQUIDACAO, " +
+                                "    VLR_PAGAMENTO, " +
+                                "    coalesce(VLR_PAGAMENTO_DESCONTO, 0) as VLR_PAGAMENTO_DESCONTO, " +
+                                "    VLR_PAGAMENTO_LIQUIDO, " +
+                                "    HST_LIQUIDACAO " +
+                                "    HST_PAGAMENTO " +
+                                "FROM " +
+                                "    dbo.VW_CT_PAGAMENTO " +
+                                "WHERE " +
+                                "    ANO_PAGAMENTO = ? " +
+                                "AND SBL_PAGAMENTO_TIPO = 'O' " +
+                                "AND SEQ_CT_UNIDADE_GESTORA = 21 " + teste +
+                                "ORDER BY " +
+                                "    NRO_PAGAMENTO_ORDEM ");
+                stmt.setInt(1, anoSonner);
+                rs = stmt.executeQuery();
+                while (rs.next()) {
+                    seqPagamento = rs.getInt(1);
+                    autorizacao = rs.getInt(2);
+                    dataAutorizacao = rs.getDate(3);
+                    dataPagamento = rs.getDate(4);
+                    empenho = rs.getInt(5);
+                    liquidacao = rs.getInt(6);
+                    dataLiquidacao = rs.getDate(7);
+                    vencimento = rs.getDate(8);
+                    valorLiquidacao = rs.getBigDecimal(9);
+                    valorParcela = rs.getBigDecimal(10);
+                    valorDesconto = rs.getBigDecimal(11);
+                    valorPago = rs.getBigDecimal(12);
+                    historicoLiquidacao = rs.getString(13).trim().toUpperCase();
+                    historicoPagamento = rs.getString(13).trim().toUpperCase();
 
-                parcela = getMaxParcela(emLocal, anoAtual, empenho);
+                    parcela = getMaxParcela(emLocal, anoAtual, empenho);
 
-                System.out.println("Autorizacaoo - " + autorizacao + " - TipoDoc: E " + " - Documento: " + empenho + " - Parcela: " + parcela + " [" + seqPagamento + "]");
+                    System.out.println("Autorizacaoo - " + autorizacao + " - TipoDoc: E " + " - Documento: " + empenho + " - Parcela: " + parcela + " [" + seqPagamento + "]");
 
-                AutPagto autPagto = new AutPagto(anoAtual, autorizacao, dataAutorizacao, dataPagamento, historicoLiquidacao);
-                emLocal.persist(autPagto);
+                    AutPagto autPagto = new AutPagto(anoAtual, autorizacao, dataAutorizacao, dataPagamento, historicoPagamento);
+                    emLocal.persist(autPagto);
 
-                ItensAutPagto itensAutPagto = new ItensAutPagto(anoAtual, autorizacao, "E", empenho, parcela);
-                emLocal.persist(itensAutPagto);
+                    ItensAutPagto itensAutPagto = new ItensAutPagto(anoAtual, autorizacao, EMPENHO, empenho, parcela);
+                    emLocal.persist(itensAutPagto);
 
-                LiquidacaoEmpenho liquidacaoEmpenho = emLocal.find(LiquidacaoEmpenho.class, new LiquidacaoEmpenhoPK(anoAtual, empenho, liquidacao));
-                if (Objects.isNull(liquidacaoEmpenho)) {
-                    liquidacaoEmpenho = new LiquidacaoEmpenho(anoAtual, empenho, liquidacao, dataLiquidacao, valorLiquidacao, historicoLiquidacao);
-                    emLocal.persist(liquidacaoEmpenho);
-                } else {
-                    valorLiquidacao = valorLiquidacao.add(liquidacaoEmpenho.getValorLiquidacao());
-                    liquidacaoEmpenho.setValorLiquidacao(valorLiquidacao);
-                    emLocal.merge(liquidacaoEmpenho);
+                    LiquidacaoEmpenho liquidacaoEmpenho = emLocal.find(LiquidacaoEmpenho.class, new LiquidacaoEmpenhoPK(anoAtual, empenho, liquidacao));
+                    if (Objects.isNull(liquidacaoEmpenho)) {
+                        liquidacaoEmpenho = new LiquidacaoEmpenho(anoAtual, empenho, liquidacao, dataLiquidacao, valorLiquidacao, historicoLiquidacao);
+                        emLocal.persist(liquidacaoEmpenho);
+                    } else {
+                        valorLiquidacao = valorLiquidacao.add(liquidacaoEmpenho.getValorLiquidacao());
+                        liquidacaoEmpenho.setValorLiquidacao(valorLiquidacao);
+                        emLocal.merge(liquidacaoEmpenho);
+                    }
+
+                    LiquidaPagto liquidaPagto = new LiquidaPagto(anoAtual, empenho, liquidacao, parcela);
+                    emLocal.persist(liquidaPagto);
+
+                    Pagamentos pagamentos = new Pagamentos(anoAtual, empenho, parcela, dataLiquidacao, vencimento, historicoPagamento, valorParcela, dataPagamento, valorPago, valorDesconto);
+                    emLocal.persist(pagamentos);
+
+                    // Pegando Desconto
+                    if (valorDesconto.signum() > 0) {
+                        desconto(emLocal, con, anoAtual, seqPagamento, autorizacao, EMPENHO, empenho, parcela, versaoRecurso, dataPagamento);
+                    }
+
+                    // Pagamento
+                    financeiro(emLocal, con, anoAtual, seqPagamento, autorizacao, EMPENHO, empenho, parcela, versaoRecurso, dataPagamento);
                 }
-
-                LiquidaPagto liquidaPagto = new LiquidaPagto(anoAtual, empenho, liquidacao, parcela);
-                emLocal.persist(liquidaPagto);
-
-                Pagamentos pagamentos = new Pagamentos(anoAtual, empenho, parcela, dataLiquidacao, vencimento, historicoPagamento, valorParcela, dataPagamento, valorPago, valorDesconto);
-                emLocal.persist(pagamentos);
-
-                // Pegando Desconto
-                if (valorDesconto.signum() > 0) {
-                    desconto(con, emLocal, anoAtual, "E", empenho, parcela, dataPagamento, autorizacao, seqPagamento, versaoRecurso, 110, 999);
-                }
-
-                // Pagamento
-                financeiro(emLocal, con, seqPagamento, autorizacao, empenho, parcela, versaoRecurso, anoAtual, dataPagamento);
+                stmt.close();
+                rs.close();
             }
-            stmt.close();
-            rs.close();
 
+            // ORDEM DE PAGAMENTO
+            if (ordemPagamento) {
+                System.out.println("INICIANDO IMPORTAÇÃO PAGAMENTOS - OP " + anoSonner);
+                stmt = con.prepareStatement(
+                        "SELECT DISTINCT " +
+                                "    SEQ_CT_PAGAMENTO, " +
+                                "    NRO_PAGAMENTO_ORDEM, " +
+                                "    DAT_PAGAMENTO_ORDEM, " +
+                                "    DAT_PAGAMENTO, " +
+                                "    VLR_PAGAMENTO, " +
+                                "    COALESCE(VLR_PAGAMENTO_DESCONTO, 0) AS VLR_PAGAMENTO_DESCONTO, " +
+                                "    VLR_PAGAMENTO_LIQUIDO, " +
+                                "    HST_PAGAMENTO, " +
+                                "    SEQ_CT_PLANO_CONTA, " +
+                                "    COD_FONTE_RECURSO, " +
+                                "    COD_PESSOA " +
+                                "FROM " +
+                                "    dbo.VW_CT_PAGAMENTO " +
+                                "WHERE " +
+                                "    ANO_PAGAMENTO = ? " +
+                                "AND SBL_PAGAMENTO_TIPO = 'E' " +
+                                "AND SEQ_CT_UNIDADE_GESTORA = 21 " + teste +
+                                "ORDER BY " +
+                                "    NRO_PAGAMENTO_ORDEM ");
+                stmt.setInt(1, anoSonner);
+                rs = stmt.executeQuery();
+                while (rs.next()) {
+                    seqPagamento = rs.getInt(1);
+                    autorizacao = rs.getInt(2);
+                    dataAutorizacao = rs.getDate(3);
+                    dataPagamento = rs.getDate(4);
+                    valorParcela = rs.getBigDecimal(5);
+                    valorDesconto = rs.getBigDecimal(6);
+                    valorPago = rs.getBigDecimal(7);
+                    historicoPagamento = rs.getString(8).trim().toUpperCase();
+                    fichaConta = rs.getInt(9);
+                    fonteRecurso = rs.getInt(10);
+                    fornecedor = rs.getInt(11);
+                    parcela = 1;
 
+                    nroOP = getMaxOP(emLocal, anoAtual);
+
+                    System.out.println("Autorizacaoo - " + autorizacao + " - TipoDoc: O " + " - Documento: " + nroOP + " - Parcela: 1 [" + seqPagamento + "]");
+
+                    OrdensPagto ordensPagto = new OrdensPagto(anoAtual, nroOP, fichaConta, fornecedor, dataPagamento, historicoPagamento, valorParcela, dataPagamento, valorDesconto, null, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO);
+                    emLocal.persist(ordensPagto);
+
+                    PagtoOP pagtoOP = new PagtoOP(anoAtual, nroOP, dataPagamento, valorPago);
+                    emLocal.persist(pagtoOP);
+
+                    OPFonteRecurso opFonteRecurso = new OPFonteRecurso(anoAtual, nroOP, versaoRecurso, fonteRecurso, 999, 0, valorParcela);
+                    emLocal.persist(opFonteRecurso);
+
+                    // Cadastrando Conta Extra
+//                    ContaExtra contaExtra = emLocal.find(ContaExtra.class, new ContaExtraPK(anoAtual, fichaConta));
+//
+//                    if (Objects.isNull(contaExtra)) {
+//                        contaExtra = new ContaExtra(anoAtual, fichaConta, "", 5);
+//                        emLocal.persist(contaExtra);
+//                    }
+
+                    AutPagto autPagto = new AutPagto(anoAtual, autorizacao, dataAutorizacao, dataPagamento, historicoPagamento);
+                    emLocal.persist(autPagto);
+
+                    ItensAutPagto itensAutPagto = new ItensAutPagto(anoAtual, autorizacao, ORDEMPAGTO, nroOP, parcela);
+                    emLocal.persist(itensAutPagto);
+
+                    // Pegando Desconto
+                    if (valorDesconto.signum() > 0) {
+                        desconto(emLocal, con, anoAtual, seqPagamento, autorizacao, EMPENHO, nroOP, parcela, versaoRecurso, dataPagamento);
+                    }
+                }
+                stmt.close();
+                rs.close();
+            }
         } catch (SQLException e) {
             System.out.println("Ops");
             e.printStackTrace();
         } finally {
             closeConexao(con, stmt, rs);
         }
+    }
+
+    private static int getMaxOP(EntityManager em, Date ano) {
+        Integer max = 0;
+        Query q = em.createQuery("Select MAX(a.id.numero) from OrdensPagto a where a.id.ano = :ano ")
+                .setParameter("ano", ano);
+        max = (Integer) q.getSingleResult();
+        max = (max == null) ? 0 : max;
+        max++;
+        return max;
     }
 
     private static void delete(Date anoAtual) {
@@ -146,6 +239,10 @@ public class ImportaPagamento extends Util {
         delete("CBPDESCONTOSOP", anoAtual);
         delete("CBPDOCPAGTO", anoAtual);
 
+        delete("CBPORDENSPAGTO", anoAtual);
+        delete("CBPPAGTOOPS", anoAtual);
+        delete("CBPOPFONTERECURSO", anoAtual);
+
         deleteQuery("Delete from CBPITENSGUIA A Where A.ANO = :ano " +
                 " AND EXISTS ( SELECT * from CBPGUIARECEITA B Where A.ANO = B.ANO AND A.TIPO = B.TIPO AND A.GUIA = B.NUMERO AND B.ORIGEM = 'AUT' )", anoAtual);
         deleteQuery("Delete from CBPGUIARECEITA Where ANO = :ano and ORIGEM = 'AUT' ", anoAtual);
@@ -154,11 +251,11 @@ public class ImportaPagamento extends Util {
         deleteQuery("Delete from CBPCHEQUE where ANOLANCTO = :ano and AUTPAGTO > 0 ", anoAtual);
     }
 
-    private static void financeiro(EntityManager emLocal, Connection con, Integer seqPagamento, Integer autorizacao, Integer documento, Integer parcela, Integer versaoRecurso, Date anoAtual, Date dataPagamento) throws SQLException {
+    private static void financeiro(EntityManager emLocal, Connection con, Date anoAtual, Integer seqPagamento, Integer autorizacao, String tipoDoc, Integer documento, Integer parcela, Integer versaoRecurso, Date dataPagamento) throws SQLException {
         PreparedStatement stmt2;
         ResultSet rs2;
         BigDecimal valorPago;
-        Integer fonteRecurso,banco, fichaBancaria, nroCheque;
+        Integer fonteRecurso, banco, fichaBancaria, nroCheque;
         String contaBancaria, formaPagamento, agencia;
 
         stmt2 = con.prepareStatement(
@@ -207,7 +304,7 @@ public class ImportaPagamento extends Util {
                 debito.setBanco(banco);
                 debito.setAgencia(agencia);
                 debito.setConta(contaBancaria);
-                debito.setHistorico("Pagamento da Autorização: " + autorizacao );
+                debito.setHistorico("Pagamento da Autorização: " + autorizacao);
                 debito.setAnoLancto(anoAtual);
                 debito.setLancamento(-1);
                 debito.setValor(valorPago);
@@ -218,12 +315,12 @@ public class ImportaPagamento extends Util {
                 debito.setFinalidade("P");
                 debito.setAutPagto(autorizacao);
                 emLocal.persist(debito);
-            } else if(formaPagamento.equals("CH")){
+            } else if (formaPagamento.equals("CH")) {
                 Cheque cheque = new Cheque();
                 cheque.getId().setFichaConta(fichaBancaria);
                 cheque.getId().setNumero(nroCheque);
                 cheque.getId().setData(dataPagamento);
-                cheque.getId().setHistorico("Pagamento da Autorização: " + autorizacao );
+                cheque.getId().setHistorico("Pagamento da Autorização: " + autorizacao);
                 cheque.setBanco(banco);
                 cheque.setAgencia(agencia);
                 cheque.setConta(contaBancaria);
@@ -239,23 +336,9 @@ public class ImportaPagamento extends Util {
                 cheque.setDataEmissao(dataPagamento);
                 cheque.setDataBaixa(dataPagamento);
                 emLocal.persist(cheque);
-            } else {
-                max = 1;
             }
 
-            AutPagtoFonteRec autPagtoFonteRec = new AutPagtoFonteRec(
-                    anoAtual,
-                    autorizacao,
-                    fichaBancaria,
-                    "E",
-                    documento,
-                    parcela,
-                    1,
-                    versaoRecurso,
-                    fonteRecurso,
-                    999,
-                    0,
-                    valorPago);
+            AutPagtoFonteRec autPagtoFonteRec = new AutPagtoFonteRec(anoAtual, autorizacao, fichaBancaria, tipoDoc, documento, parcela, 1, versaoRecurso, fonteRecurso, 999, 0, valorPago);
             emLocal.persist(autPagtoFonteRec);
         }
     }
@@ -270,8 +353,7 @@ public class ImportaPagamento extends Util {
         return max;
     }
 
-    private static void desconto(Connection con, EntityManager em, Date anoAtual, String tipoDoc, Integer
-            documento, Integer parcela, Date dataGuia, Integer autorizacao, Integer seqPagamento, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo) {
+    private static void desconto(EntityManager em, Connection con, Date anoAtual, Integer seqPagamento, Integer autorizacao, String tipoDoc, Integer documento, Integer parcela, Integer versaoRecurso, Date dataGuia) {
         PreparedStatement stmtAux;
         ResultSet rsAux;
         Integer fichaReceita, guia;
@@ -281,6 +363,8 @@ public class ImportaPagamento extends Util {
         GuiaReceita guiaReceita;
         ItensGuiaReceita itensGuiaReceita;
         DescontosPagto descontosPagto;
+        DescontosOP descontosOP;
+        Query q;
 
         try {
             stmtAux = con.prepareStatement(
@@ -294,7 +378,7 @@ public class ImportaPagamento extends Util {
                 fichaReceita = rsAux.getInt(1);
                 valorReceita = rsAux.getBigDecimal(2);
 
-                Query q = em.createQuery("Select MAX(a.id.numero) from GuiaReceita a where a.id.ano = :ano  and a.id.tipo = :tipo ")
+                q = em.createQuery("Select MAX(a.id.numero) from GuiaReceita a where a.id.ano = :ano  and a.id.tipo = :tipo ")
                         .setParameter("ano", anoAtual)
                         .setParameter("tipo", tipoReceita);
                 guia = (Integer) q.getSingleResult();
@@ -304,10 +388,15 @@ public class ImportaPagamento extends Util {
                 guiaReceita = new GuiaReceita(anoAtual, tipoReceita, guia, 1, dataGuia, dataGuia, dataGuia, "Guia de Receita de desconto - Autorização: " + autorizacao, "AUT", autorizacao);
                 em.persist(guiaReceita);
 
-                descontosPagto = new DescontosPagto(anoAtual, documento, parcela, tipoReceita, guia);
-                em.persist(descontosPagto);
+                if (tipoDoc.equals("E")) {
+                    descontosPagto = new DescontosPagto(anoAtual, documento, parcela, tipoReceita, guia);
+                    em.persist(descontosPagto);
+                } else {
+                    descontosOP = new DescontosOP(anoAtual, documento, parcela, tipoReceita, guia);
+                    em.persist(descontosOP);
+                }
 
-                itensGuiaReceita = new ItensGuiaReceita(anoAtual, tipoReceita, guia, fichaReceita, versaoRecurso, fonteRecurso, caFixo, 0, Integer.toString(fichaReceita), valorReceita);
+                itensGuiaReceita = new ItensGuiaReceita(anoAtual, tipoReceita, guia, fichaReceita, versaoRecurso, 110, 999, 0, Integer.toString(fichaReceita), valorReceita);
                 em.persist(itensGuiaReceita);
             }
             stmtAux.close();
@@ -315,7 +404,5 @@ public class ImportaPagamento extends Util {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
-
 }

@@ -16,15 +16,17 @@ public class Receitas implements Serializable {
 	private Integer empresa;
 	private String receita;
 	private BigDecimal orcado;
+	private boolean arrecadaProporc;
 
 	public Receitas() {
 		this.id = new ReceitasPK();
 	}
 
-	public Receitas(Date ano, Integer empresa, Integer ficha, String receita, BigDecimal orcado) {
+	public Receitas(Date ano, Integer empresa, Integer ficha, String receita, boolean arrecadaProporc, BigDecimal orcado) {
 		this.id = new ReceitasPK(ano, ficha);
 		this.empresa = empresa;
 		this.receita = receita;
+		this.arrecadaProporc = arrecadaProporc;
 		this.orcado = orcado;
 	}
 
@@ -60,4 +62,11 @@ public class Receitas implements Serializable {
 		this.orcado = orcado;
 	}
 
+	public boolean isArrecadaProporc() {
+		return arrecadaProporc;
+	}
+
+	public void setArrecadaProporc(boolean arrecadaProporc) {
+		this.arrecadaProporc = arrecadaProporc;
+	}
 }

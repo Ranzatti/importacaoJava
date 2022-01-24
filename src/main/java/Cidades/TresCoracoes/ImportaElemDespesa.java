@@ -1,9 +1,6 @@
 package Cidades.TresCoracoes;
 
-import _Entity.ElemDespCA;
-import _Entity.ElemDespMensal;
-import _Entity.ElemDespRecurso;
-import _Entity.ElemDespesa;
+import _Entity.*;
 import _Infra.Util;
 
 import javax.persistence.EntityManager;
@@ -14,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Objects;
 
 public class ImportaElemDespesa extends Util {
 
@@ -32,8 +30,8 @@ public class ImportaElemDespesa extends Util {
         ResultSet rs2 = null;
 
         Integer empresa, ficha, versaoRecurso, fonteRecurso, caFixo, caVariavel, seqDespesa;
-        BigDecimal orcado, valor, subTotal;
-        String orgao, unidade, subUnidade, funcao, subFuncao, programa, projAtiv, despesa, categoria, grupo, modalidade, elemento, desdobramento, codAplicacao, nomeDespesa, tipoConta;
+        BigDecimal orcado, orcadoFonteRecurso, valor, subTotal, ordinario, vinculado;
+        String orgao, unidade, subUnidade, funcao, subFuncao, programa, projAtiv, despesa, categoria, grupo, modalidade, elemento, desdobramento, codAplicacao, nomeDespesa, tipoConta, ordinario_vinculado;
 
         Date anoAtual = java.sql.Date.valueOf(anoSonner + "-01-01");
 
@@ -51,98 +49,92 @@ public class ImportaElemDespesa extends Util {
         try {
             // importando elem despesa
             stmt = con.prepareStatement(
-                    "select A.NRO_ORCAMENTO_DESPESA_FICHA, " +
-                            "B.COD_UNIDADE_GESTORA_TCE, " +
-                            "C.COD_UNIDADE_ORCAMENTARIA, " +
-                            "E.COD_FUNCAO, " +
-                            "F.COD_SUBFUNCAO, " +
-                            "G.COD_PROGRAMA, " +
-                            "H.COD_ATIVIDADE_PROJETO, " +
-                            "I.COD_PLANO_CONTA_GRUPO, " +
-                            "A.VLR_ORCAMENTO_DESPESA, " +
-                            "A.SEQ_CT_ORCAMENTO_DESPESA  " +
-                            " from dbo.CT_ORCAMENTO_DESPESA A " +
-                            " join dbo.CT_UNIDADE_GESTORA B on ( A.SEQ_CT_UNIDADE_GESTORA = B.SEQ_CT_UNIDADE_GESTORA ) " +
-                            " join dbo.CT_UNIDADE_ORCAMENTARIA C on ( A.SEQ_CT_UNIDADE_ORCAMENTARIA = C.SEQ_CT_UNIDADE_ORCAMENTARIA ) " +
-                            " join dbo.CT_ORGAO D ON ( C.SEQ_CT_ORGAO = D.SEQ_CT_ORGAO ) " +
-                            " join dbo.CT_FUNCAO E ON ( A.SEQ_CT_FUNCAO = E.SEQ_CT_FUNCAO ) " +
-                            " join dbo.CT_SUBFUNCAO F ON ( A.SEQ_CT_SUBFUNCAO = F.SEQ_CT_SUBFUNCAO ) " +
-                            " join dbo.CT_PROGRAMA G ON ( A.SEQ_CT_PROGRAMA = G.SEQ_CT_PROGRAMA ) " +
-                            " join dbo.CT_ATIVIDADE_PROJETO H ON ( A.SEQ_CT_ATIVIDADE_PROJETO = H.SEQ_CT_ATIVIDADE_PROJETO ) " +
-                            " join dbo.CT_PLANO_CONTA I ON ( A.SEQ_CT_PLANO_CONTA = I.SEQ_CT_PLANO_CONTA ) " +
-                            " where ANO_ORCAMENTO_DESPESA = ? " +
-                            " and A.SEQ_CT_UNIDADE_GESTORA = 21 " +
-                            " order by 1");
+                    "SELECT " +
+                            "    NRO_ORCAMENTO_DESPESA_FICHA, " +
+                            "    COD_UNIDADE_GESTORA, " +
+                            "    COD_UNIDADE_ORCAMENTARIA, " +
+                            "    COD_SUBUNIDADE_ORCAMENTARIA, " +
+                            "    COD_FUNCAO, " +
+                            "    COD_SUBFUNCAO, " +
+                            "    COD_PROGRAMA, " +
+                            "    COD_ATIVIDADE_PROJETO, " +
+                            "    COD_PLANO_CONTA_GRUPO, " +
+                            "    SBL_ORCAMENTO_DESPESA_ORDINARIO_VINCULADO, " +
+                            "    COD_FONTE_RECURSO, " +
+                            "    VLR_ORCAMENTO_DESPESA, " +
+                            "    VLR_ORCAMENTO_DESPESA_FONTE_RECURSO " +
+                            "FROM " +
+                            "    VW_CT_ORCAMENTO_DESPESA " +
+                            "WHERE " +
+                            "    ANO_ORCAMENTO_DESPESA = ? " +
+                            "AND SEQ_CT_UNIDADE_GESTORA = 21" +
+                            "Order by 1");
             stmt.setInt(1, anoSonner);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 ficha = rs.getInt(1);
                 orgao = rs.getString(2).trim();
                 unidade = rs.getString(3).trim();
-                funcao = "00" + rs.getString(4).trim();
-                subFuncao = "000" + rs.getString(5).trim();
-                programa = "0000" + rs.getString(6).trim();
-                projAtiv = "0000" + rs.getString(7).trim().replace(".", "");
-                despesa = rs.getString(8).trim();
-                orcado = rs.getBigDecimal(9);
-                seqDespesa = rs.getInt(10);
+                subUnidade = rs.getString(4);
+                funcao = "00" + rs.getString(5).trim();
+                subFuncao = "000" + rs.getString(6).trim();
+                programa = "0000" + rs.getString(7).trim();
+                projAtiv = "0000" + rs.getString(8).trim().replace(".", "");
+                despesa = rs.getString(9).trim();
+                ordinario_vinculado = rs.getString(10).trim();
+                fonteRecurso = rs.getInt(11);
+                orcado = rs.getBigDecimal(12);
+                orcadoFonteRecurso = rs.getBigDecimal(13);
 
                 System.out.println("Ficha: " + ficha);
 
-                unidade = unidade.substring(unidade.length() - 2);
-                subUnidade = unidade.length() > 3 ? unidade.substring(3, 6) : "";
-                funcao = funcao.substring(funcao.length() - 2);
-                subFuncao = subFuncao.substring(subFuncao.length() - 3);
-                programa = programa.substring(programa.length() - 4);
-                projAtiv = projAtiv.substring(projAtiv.length() - 4);
-                categoria = despesa.substring(0, 1);
-                grupo = despesa.substring(1, 2);
-                modalidade = despesa.substring(2, 4);
-                elemento = despesa.substring(4, 6);
+                ElemDespesa elemDespesa = emLocal.find(ElemDespesa.class, new ElemDespesaPK(anoAtual, ficha));
 
-                // Elem despesa
-                ElemDespesa elemDespesa = new ElemDespesa(anoAtual, 5, ficha, orgao, unidade, null, funcao, subFuncao, programa, projAtiv, categoria, grupo, modalidade, elemento, "00", orcado);
-                emLocal.persist(elemDespesa);
+                if(Objects.isNull(elemDespesa)) {
+                    unidade = unidade.substring(unidade.length() - 2);
+                    funcao = funcao.substring(funcao.length() - 2);
+                    subFuncao = subFuncao.substring(subFuncao.length() - 3);
+                    programa = programa.substring(programa.length() - 4);
+                    projAtiv = projAtiv.substring(projAtiv.length() - 4);
+                    categoria = despesa.substring(0, 1);
+                    grupo = despesa.substring(1, 2);
+                    modalidade = despesa.substring(2, 4);
+                    elemento = despesa.substring(4, 6);
 
-                // Fonte Recurso
-                caFixo = 999;
-                caVariavel = 0;
-                stmt2 = con.prepareStatement(
-                        "select K.COD_FONTE_RECURSO, VLR_ORCAMENTO_DESPESA_FONTE_RECURSO " +
-                                "from dbo.CT_ORCAMENTO_DESPESA_FONTE_RECURSO J " +
-                                "join dbo.CT_FONTE_RECURSO K ON ( j.SEQ_CT_FONTE_RECURSO = k.SEQ_CT_FONTE_RECURSO ) " +
-                                "where J.SEQ_CT_ORCAMENTO_DESPESA = ? ");
-                stmt2.setInt(1, seqDespesa);
-                rs2 = stmt2.executeQuery();
-                while (rs2.next()) {
-
-                    fonteRecurso = rs2.getInt(1);
-                    orcado = rs2.getBigDecimal(2);
-
-                    ElemDespRecurso elemDespRecurso = new ElemDespRecurso(anoAtual, ficha, versaoRecurso, fonteRecurso, orcado);
-                    emLocal.persist(elemDespRecurso);
-
-                    // Codigo Aplicacao
-                    ElemDespCA elemDespCA = new ElemDespCA(anoAtual, ficha, versaoRecurso, fonteRecurso, caFixo, caVariavel, orcado);
-                    emLocal.persist(elemDespCA);
-
-                    //Distribuição Mensal
-                    subTotal = BigDecimal.ZERO;
-                    valor = orcado.divide(BigDecimal.valueOf(12), 2, RoundingMode.DOWN);
-                    for (int mes = 1; mes <= 12; mes++) {
-                        if (mes == 12) {
-                            valor = orcado.subtract(subTotal);
-                        } else {
-                            subTotal = subTotal.add(valor);
-                        }
-
-                        ElemDespMensal elemDespMensal = new ElemDespMensal(anoAtual, ficha, versaoRecurso, fonteRecurso, caFixo, caVariavel, mes, valor);
-                        emLocal.persist(elemDespMensal);
+                    ordinario = BigDecimal.ZERO;
+                    vinculado = BigDecimal.ZERO;
+                    if(ordinario_vinculado.equals("O")){
+                        ordinario = orcado;
+                    } else {
+                        vinculado = orcado;
                     }
 
+                    // Elem despesa
+                    elemDespesa = new ElemDespesa(anoAtual, 5, ficha, orgao, unidade, null, funcao, subFuncao, programa, projAtiv, categoria, grupo, modalidade, elemento, "00", orcado, ordinario, vinculado);
+                    emLocal.persist(elemDespesa);
                 }
-                stmt2.close();
-                rs2.close();
+
+                // Fonte Recurso
+                ElemDespRecurso elemDespRecurso = new ElemDespRecurso(anoAtual, ficha, versaoRecurso, fonteRecurso, orcadoFonteRecurso);
+                emLocal.persist(elemDespRecurso);
+
+                // Codigo Aplicacao
+                ElemDespCA elemDespCA = new ElemDespCA(anoAtual, ficha, versaoRecurso, fonteRecurso, 999, 0, orcadoFonteRecurso);
+                emLocal.persist(elemDespCA);
+
+                //Distribuição Mensal
+                subTotal = BigDecimal.ZERO;
+                valor = orcadoFonteRecurso.divide(BigDecimal.valueOf(12), 2, RoundingMode.DOWN);
+                for (int mes = 1; mes <= 12; mes++) {
+                    if (mes == 12) {
+                        valor = orcado.subtract(subTotal);
+                    } else {
+                        subTotal = subTotal.add(valor);
+                    }
+
+                    ElemDespMensal elemDespMensal = new ElemDespMensal(anoAtual, ficha, versaoRecurso, fonteRecurso, 999, 0, mes, valor);
+                    emLocal.persist(elemDespMensal);
+                }
             }
             stmt.close();
             rs.close();

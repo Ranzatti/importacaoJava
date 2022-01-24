@@ -82,10 +82,10 @@ public class ImportaReceita extends Util {
                 caFixo = Integer.parseInt(codAplicacao.substring(0, 3));
                 caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
 
-                Receitas receitas = new Receitas(anoAtual, empresa, ficha, receita, orcado);
+                Receitas receitas = new Receitas(anoAtual, empresa, ficha, receita, false, orcado);
                 emLocal.persist(receitas);
 
-                ReceitaFonteRecurso receitaFonteRecurso = new ReceitaFonteRecurso(anoAtual, ficha, 1, fonteRecurso, orcado);
+                ReceitaFonteRecurso receitaFonteRecurso = new ReceitaFonteRecurso(anoAtual, ficha, 1, fonteRecurso, null, orcado);
                 emLocal.persist(receitaFonteRecurso);
 
                 ReceitasCA receitasCA = new ReceitasCA(anoAtual, ficha, 1, fonteRecurso, caFixo, caVariavel, orcado);

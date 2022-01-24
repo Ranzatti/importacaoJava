@@ -27,12 +27,15 @@ public class ElemDespesa implements Serializable {
     private String elemento;
     private String desdobramento;
     private BigDecimal orcado;
+    private BigDecimal ordinario;
+    private BigDecimal vinculado;
 
     public ElemDespesa() {
         this.id = new ElemDespesaPK();
     }
 
-    public ElemDespesa(Date ano, Integer empresa, Integer ficha, String orgao, String unidade, String subUnidade, String funcao, String subFuncao, String programa, String projAtiv, String categoria, String grupo, String modalidade, String elemento, String desdobramento, BigDecimal orcado) {
+    public ElemDespesa(Date ano, Integer empresa, Integer ficha, String orgao, String unidade, String subUnidade, String funcao, String subFuncao, String programa, String projAtiv, String categoria,
+                       String grupo, String modalidade, String elemento, String desdobramento, BigDecimal orcado, BigDecimal ordinario, BigDecimal vinculado) {
         this.id = new ElemDespesaPK(ano, ficha);
         this.empresa = empresa;
         this.orgao = orgao;
@@ -48,6 +51,8 @@ public class ElemDespesa implements Serializable {
         this.elemento = elemento;
         this.desdobramento = desdobramento;
         this.orcado = orcado;
+        this.ordinario = ordinario;
+        this.vinculado = vinculado;
     }
 
     public ElemDespesaPK getId() {
@@ -170,4 +175,19 @@ public class ElemDespesa implements Serializable {
         this.orcado = orcado;
     }
 
+    public BigDecimal getOrdinario() {
+        return ordinario;
+    }
+
+    public void setOrdinario(BigDecimal ordinario) {
+        this.ordinario = ordinario;
+    }
+
+    public BigDecimal getVinculado() {
+        return vinculado;
+    }
+
+    public void setVinculado(BigDecimal vinculado) {
+        this.vinculado = vinculado;
+    }
 }

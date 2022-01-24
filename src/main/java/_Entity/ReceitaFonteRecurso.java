@@ -14,14 +14,16 @@ public class ReceitaFonteRecurso implements Serializable {
 	@EmbeddedId
 	private ReceitaFonteRecursoPK id;
 	private BigDecimal orcado;
+	private BigDecimal percentual;
 
 	public ReceitaFonteRecurso() {
 		this.id = new ReceitaFonteRecursoPK();
 	}
 
-	public ReceitaFonteRecurso(Date ano, Integer fichaReceita, Integer versaoRecurso, Integer fonteRecurso, BigDecimal orcado) {
+	public ReceitaFonteRecurso(Date ano, Integer fichaReceita, Integer versaoRecurso, Integer fonteRecurso, BigDecimal percentual, BigDecimal orcado) {
 		this.id = new ReceitaFonteRecursoPK(ano, fichaReceita, versaoRecurso, fonteRecurso);
 		this.orcado = orcado;
+		this.percentual = percentual;
 	}
 
 	public ReceitaFonteRecursoPK getId() {
@@ -40,4 +42,11 @@ public class ReceitaFonteRecurso implements Serializable {
 		this.orcado = orcado;
 	}
 
+	public BigDecimal getPercentual() {
+		return percentual;
+	}
+
+	public void setPercentual(BigDecimal percentual) {
+		this.percentual = percentual;
+	}
 }

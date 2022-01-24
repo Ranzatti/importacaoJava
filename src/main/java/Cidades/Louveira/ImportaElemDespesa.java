@@ -107,7 +107,7 @@ public class ImportaElemDespesa extends Util {
                 caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
 
                 // Elem despesa
-                ElemDespesa elemDespesa = new ElemDespesa(anoAtual, empresa, ficha, orgao, unidade, subUnidade, funcao, subFuncao, programa, projAtiv, categoria, grupo, modalidade, elemento, desdobramento, orcado);
+                ElemDespesa elemDespesa = new ElemDespesa(anoAtual, empresa, ficha, orgao, unidade, subUnidade, funcao, subFuncao, programa, projAtiv, categoria, grupo, modalidade, elemento, desdobramento, orcado, BigDecimal.ZERO, BigDecimal.ZERO);
                 emLocal.persist(elemDespesa);
 
                 // Fonte Recurso
