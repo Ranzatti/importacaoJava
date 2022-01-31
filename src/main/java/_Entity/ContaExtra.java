@@ -12,15 +12,19 @@ public class ContaExtra implements Serializable {
     private ContaExtraPK id;
     private String nome;
     private Integer empresa;
+    private Date anoRestos;
+    private String tipoResto;
 
     public ContaExtra() {
         this.id = new ContaExtraPK();
     }
 
-    public ContaExtra(Date ano, Integer contaExtra, String nome, Integer empresa) {
+    public ContaExtra(Date ano, Integer contaExtra, String nome, Integer empresa, Date anoRestos, String tipoResto) {
         this.id = new ContaExtraPK(ano, contaExtra);
         this.nome = nome;
         this.empresa = empresa;
+        this.anoRestos = anoRestos;
+        this.tipoResto = tipoResto;
     }
 
     public ContaExtraPK getId() {
@@ -47,4 +51,19 @@ public class ContaExtra implements Serializable {
         this.empresa = empresa;
     }
 
+    public Date getAnoRestos() {
+        return anoRestos;
+    }
+
+    public void setAnoRestos(Date anoRestos) {
+        this.anoRestos = anoRestos;
+    }
+
+    public String getTipoResto() {
+        return tipoResto;
+    }
+
+    public void setTipoResto(String tipoResto) {
+        this.tipoResto = tipoResto;
+    }
 }

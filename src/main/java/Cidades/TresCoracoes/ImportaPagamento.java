@@ -2,18 +2,15 @@ package Cidades.TresCoracoes;
 
 import _Entity.*;
 import _Infra.Util;
-import org.hibernate.hql.internal.ast.tree.RestrictableStatement;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class ImportaPagamento extends Util {
@@ -35,11 +32,11 @@ public class ImportaPagamento extends Util {
         ResultSet rs = null;
         ResultSet rs2 = null;
 
-        String teste, historicoPagamento, nomeCredor, desdobramento;
+        String teste, historicoPagamento, nomeCredor, desdobramento, tipoRestosPagar;
         Integer seqPagamento, seqliquidacao, autorizacao, empenho, liquidacao, parcela, nroOP, fichaConta, versaoRecurso, fonteRecurso, fornecedor, empenhoRestos, fichaDotacao, codCredor;
-        BigDecimal valorLiquidacao, valorParcela, valorPago, valorDesconto, valorEmpenho;
+        BigDecimal valorLiquidacao, valorParcela, valorPago, valorDesconto, valorEmpenho, valorRPP, valorRPNP;
         Date anoAtual, dataAutorizacao, dataPagamento, dataLiquidacao, vencimento, anoEmpenhoRestos, dataEmpenho;
-        boolean empenhos, ordemPagamento, restosPagarProcessado, restosPagarNaoProcessado;
+        boolean empenhos, ordemPagamento, restosPagar, restosPagarNaoProcessado;
 
         anoAtual = java.sql.Date.valueOf(anoSonner + "-01-01");
 
@@ -51,8 +48,7 @@ public class ImportaPagamento extends Util {
 
         empenhos = false;
         ordemPagamento = false;
-        restosPagarProcessado = true;
-        restosPagarNaoProcessado = false;
+        restosPagar = true;
 
         teste = "";
         //teste = "and NRO_EMPENHO in (1) ";
@@ -188,7 +184,7 @@ public class ImportaPagamento extends Util {
                     // Cadastrando Conta Extra
                     ContaExtra contaExtra = emLocal.find(ContaExtra.class, new ContaExtraPK(anoAtual, fichaConta));
                     if (Objects.isNull(contaExtra)) {
-                        contaExtra = new ContaExtra(anoAtual, fichaConta, "", 5);
+                        contaExtra = new ContaExtra(anoAtual, fichaConta, "Conta Extra", 5, null, null);
                         emLocal.persist(contaExtra);
                     }
 
@@ -211,7 +207,7 @@ public class ImportaPagamento extends Util {
             }
 
             // RESTOS A PAGAR PROCESSADOS
-            if (restosPagarProcessado) {
+            if (restosPagar) {
                 System.out.println("INICIANDO IMPORTAÇÃO PAGAMENTOS - OP " + anoSonner);
                 stmt = con.prepareStatement(
                         "SELECT DISTINCT " +
@@ -235,12 +231,14 @@ public class ImportaPagamento extends Util {
                                 "    DAT_LIQUIDACAO_VENCIMENTO, " +
                                 "    COD_PESSOA, " +
                                 "    NOM_PESSOA, " +
-                                "    coalesce(COD_PLANO_CONTA_SUBELEMENTO, '00000099000') as COD_PLANO_CONTA_SUBELEMENTO " +
+                                "    coalesce(COD_PLANO_CONTA_SUBELEMENTO, '00000099000') as COD_PLANO_CONTA_SUBELEMENTO, " +
+                                "    SBL_PAGAMENTO_TIPO, " +
+                                "    DAT_LIQUIDACAO  " +
                                 "FROM " +
                                 "    dbo.VW_CT_PAGAMENTO " +
                                 "WHERE " +
                                 "    ANO_PAGAMENTO = ? " +
-                                "AND SBL_PAGAMENTO_TIPO = 'RPP' " +
+                                "AND SBL_PAGAMENTO_TIPO in ( 'RPP', 'RPNP' ) " +
                                 "AND SEQ_CT_UNIDADE_GESTORA = 21 " +
                                 "ORDER BY " +
                                 "    NRO_PAGAMENTO_ORDEM");
@@ -269,12 +267,55 @@ public class ImportaPagamento extends Util {
                     nomeCredor = rs.getString(20);
                     desdobramento = rs.getString(21).trim();
                     desdobramento = desdobramento.equals("") ? "99" : desdobramento.substring(6, 8);
+                    tipoRestosPagar = rs.getString(22);
+                    dataLiquidacao = rs.getDate(23);
 
                     nroOP = getMaxOP(emLocal, anoAtual);
 
                     System.out.println("Autorizacaoo - " + autorizacao + " - TipoDoc: O " + " - Documento: " + nroOP + " - Parcela: 1 [" + seqPagamento + "]");
 
-                    OrdensPagto ordensPagto = new OrdensPagto(anoAtual, nroOP, fichaConta, fornecedor, dataPagamento, historicoPagamento, valorParcela, vencimento, valorDesconto, anoEmpenhoRestos, empenhoRestos, parcela, valorParcela, BigDecimal.ZERO);
+                    if (tipoRestosPagar.equals("RPP")) {
+
+                        valorRPP = valorParcela;
+                        valorRPNP = BigDecimal.ZERO;
+
+                        RestosProcParc restosProcParc = emLocal.find(RestosProcParc.class, new RestosProcParcPK(anoEmpenhoRestos, empenhoRestos, parcela));
+                        if (Objects.isNull(restosProcParc)) {
+                            restosProcParc = new RestosProcParc(anoEmpenhoRestos, empenhoRestos, parcela, vencimento, valorParcela);
+                            emLocal.persist(restosProcParc);
+                        }
+                    } else {
+
+                        valorRPP = BigDecimal.ZERO;
+                        valorRPNP = valorParcela;
+
+                        LiquidaRestos liquidaRestos = new LiquidaRestos(anoEmpenhoRestos, empenhoRestos, parcela, dataLiquidacao, historicoPagamento, vencimento, null, valorParcela);
+                        emLocal.persist(liquidaRestos);
+
+                        LiqRestCronogra liqRestCronogra = new LiqRestCronogra(anoEmpenhoRestos, empenhoRestos, parcela, parcela, anoAtual, nroOP);
+                        emLocal.persist(liqRestCronogra);
+                    }
+
+                    RestosInscritos restosInscritos = emLocal.find(RestosInscritos.class, new RestosInscritosPK(anoEmpenhoRestos, empenhoRestos));
+                    if (Objects.isNull(restosInscritos)) {
+                        restosInscritos = new RestosInscritos(anoEmpenhoRestos, empenhoRestos, nomeCredor, codCredor, valorRPP, valorRPNP, fichaDotacao, desdobramento, dataEmpenho, valorEmpenho);
+                        emLocal.persist(restosInscritos);
+
+                        RestosFonteRec restosFonteRec = new RestosFonteRec(anoEmpenhoRestos, empenhoRestos, versaoRecurso, fonteRecurso, 999, 0, valorEmpenho);
+                        emLocal.persist(restosFonteRec);
+                    }
+
+                    // Cadastrando Conta Extra
+                    ContaExtra contaExtra = emLocal.find(ContaExtra.class, new ContaExtraPK(anoAtual, fichaConta));
+                    if (Objects.isNull(contaExtra)) {
+
+                        tipoRestosPagar = tipoRestosPagar.equals("RPP") ? "P" : "N";
+
+                        contaExtra = new ContaExtra(anoAtual, fichaConta, "Conta Extra de Restos a Pagar", 5, anoEmpenhoRestos, tipoRestosPagar);
+                        emLocal.persist(contaExtra);
+                    }
+
+                    OrdensPagto ordensPagto = new OrdensPagto(anoAtual, nroOP, fichaConta, fornecedor, dataPagamento, historicoPagamento, valorParcela, vencimento, valorDesconto, anoEmpenhoRestos, empenhoRestos, parcela, valorRPP, valorRPNP);
                     emLocal.persist(ordensPagto);
 
                     PagtoOP pagtoOP = new PagtoOP(anoAtual, nroOP, dataPagamento, valorPago);
@@ -283,41 +324,19 @@ public class ImportaPagamento extends Util {
                     OPFonteRecurso opFonteRecurso = new OPFonteRecurso(anoAtual, nroOP, versaoRecurso, fonteRecurso, 999, 0, valorParcela);
                     emLocal.persist(opFonteRecurso);
 
-                    RestosInscritos restosInscritos = emLocal.find(RestosInscritos.class, new RestosInscritosPK(anoEmpenhoRestos, empenhoRestos));
-                    if (Objects.isNull(restosInscritos)) {
-                        restosInscritos = new RestosInscritos(anoEmpenhoRestos, empenhoRestos, nomeCredor, codCredor, valorParcela, BigDecimal.ZERO, fichaDotacao, desdobramento, dataEmpenho, valorEmpenho);
-                        emLocal.persist(restosInscritos);
-
-                        RestosFonteRec restosFonteRec = new RestosFonteRec(anoEmpenhoRestos, empenhoRestos, versaoRecurso, fonteRecurso, 999, 0, valorEmpenho);
-                        emLocal.persist(restosFonteRec);
-                    }
-
-                    RestosProcParc restosProcParc = emLocal.find(RestosProcParc.class, new RestosProcParcPK(anoEmpenhoRestos, empenhoRestos, parcela));
-                    if(Objects.isNull(restosProcParc)){
-                        restosProcParc = new RestosProcParc(anoEmpenhoRestos, empenhoRestos, parcela, vencimento, valorParcela);
-                        emLocal.persist(restosProcParc);
-                    }
-
-                    // Cadastrando Conta Extra
-                    ContaExtra contaExtra = emLocal.find(ContaExtra.class, new ContaExtraPK(anoAtual, fichaConta));
-                    if (Objects.isNull(contaExtra)) {
-                        contaExtra = new ContaExtra(anoAtual, fichaConta, "", 5);
-                        emLocal.persist(contaExtra);
-                    }
-
                     AutPagto autPagto = new AutPagto(anoAtual, autorizacao, dataAutorizacao, dataPagamento, historicoPagamento);
                     emLocal.persist(autPagto);
 
-                    ItensAutPagto itensAutPagto = new ItensAutPagto(anoAtual, autorizacao, ORDEMPAGTO, nroOP, parcela);
+                    ItensAutPagto itensAutPagto = new ItensAutPagto(anoAtual, autorizacao, ORDEMPAGTO, nroOP, 1);
                     emLocal.persist(itensAutPagto);
 
                     // Pegando Desconto
                     if (valorDesconto.signum() > 0) {
-                        desconto(emLocal, con, anoAtual, seqPagamento, autorizacao, ORDEMPAGTO, nroOP, parcela, versaoRecurso, dataPagamento);
+                        desconto(emLocal, con, anoAtual, seqPagamento, autorizacao, ORDEMPAGTO, nroOP, 1, versaoRecurso, dataPagamento);
                     }
 
                     // Pagamento
-                    financeiro(emLocal, con, anoAtual, seqPagamento, autorizacao, ORDEMPAGTO, nroOP, parcela, versaoRecurso, dataPagamento);
+                    financeiro(emLocal, con, anoAtual, seqPagamento, autorizacao, ORDEMPAGTO, nroOP, 1, versaoRecurso, dataPagamento);
                 }
             }
         } catch (SQLException e) {
@@ -360,6 +379,10 @@ public class ImportaPagamento extends Util {
 
         deleteQuery("Delete from CBPDEBITO where ANOLANCTO = :ano and AUTPAGTO > 0 ", anoAtual);
         deleteQuery("Delete from CBPCHEQUE where ANOLANCTO = :ano and AUTPAGTO > 0 ", anoAtual);
+
+        deleteQuery("Delete from CBPLIQUIDARESTOS A Where " +
+                " EXISTS ( SELECT * from CBPLIQRESTCRONOGRA B Where A.ANOEMPENHO = B.ANOEMPENHO AND A.EMPENHO = B.EMPENHO AND A.LIQUIDACAO = B.LIQUIDACAO AND B.ANOOP = :ano )", anoAtual);
+        deleteQuery("Delete from CBPLIQRESTCRONOGRA where ANOOP = :ano ", anoAtual);
     }
 
     private static void financeiro(EntityManager emLocal, Connection con, Date anoAtual, Integer seqPagamento, Integer autorizacao, String tipoDoc, Integer documento, Integer parcela, Integer versaoRecurso, Date dataPagamento) throws SQLException {

@@ -29,14 +29,12 @@ public class LiquidaRestos implements Serializable {
 		this.id = new LiquidaRestosPK();
 	}
 
-	public LiquidaRestos(Date anoEmpenho, Integer empenho, Integer liquidacao, Date dataLiquidacao, String historico, Date vencimento, String liquidante, Date anoFato, Integer fato, BigDecimal valor) {
+	public LiquidaRestos(Date anoEmpenho, Integer empenho, Integer liquidacao, Date dataLiquidacao, String historico, Date vencimento, String liquidante, BigDecimal valor) {
 		this.id = new LiquidaRestosPK(anoEmpenho, empenho, liquidacao);
 		this.dataLiquidacao = dataLiquidacao;
 		this.historico = historico;
 		this.vencimento = vencimento;
 		this.liquidante = liquidante;
-		this.anoFato = anoFato;
-		this.fato = fato;
 		this.valor = valor;
 	}
 

@@ -51,7 +51,7 @@ public class ImportaContaExtra extends Util {
                 codigo = rs.getInt(1);
                 nome = rs.getString(2).trim().toUpperCase();
 
-                ContaExtra contaExtra = new ContaExtra(anoAtual, codigo, nome, 1);
+                ContaExtra contaExtra = new ContaExtra(anoAtual, codigo, nome, 1, null, null);
                 emLocal.persist(contaExtra);
 
                 ContaExtraFonteRec contaExtraFonteRec = new ContaExtraFonteRec(anoAtual, codigo, 1, 1, null, BigDecimal.ZERO);

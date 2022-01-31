@@ -239,7 +239,7 @@ public class ImportaPagamento extends Util {
 
                             liquidacao = getMaxLiquidacaoResto(emLocal, anoDocumento, documento);
 
-                            LiquidaRestos liquidaRestos = new LiquidaRestos(anoDocumento, documento, liquidacao, dataAutorizacao, historicoRestosPagar, dataAutorizacao, null, anoAtual, -1, valorNaoProcessado);
+                            LiquidaRestos liquidaRestos = new LiquidaRestos(anoDocumento, documento, liquidacao, dataAutorizacao, historicoRestosPagar, dataAutorizacao, null, valorNaoProcessado);
                             emLocal.persist(liquidaRestos);
 
                             op(emLocal, anoAtual, nroOP, 0, fornecedor, 1, fonteRecurso, caFixo, caVariavel, dataAutorizacao, null, anoDocumento, documento, parcela, valorParcela, valorProcessado, valorNaoProcessado, historicoRestosPagar);
