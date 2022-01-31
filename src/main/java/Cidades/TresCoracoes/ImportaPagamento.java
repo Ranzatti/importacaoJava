@@ -267,7 +267,7 @@ public class ImportaPagamento extends Util {
                     vencimento = rs.getDate(18);
                     codCredor = rs.getInt(19);
                     nomeCredor = rs.getString(20);
-                    desdobramento = rs.getString(9).trim();
+                    desdobramento = rs.getString(21).trim();
                     desdobramento = desdobramento.equals("") ? "99" : desdobramento.substring(6, 8);
 
                     nroOP = getMaxOP(emLocal, anoAtual);
@@ -287,6 +287,15 @@ public class ImportaPagamento extends Util {
                     if (Objects.isNull(restosInscritos)) {
                         restosInscritos = new RestosInscritos(anoEmpenhoRestos, empenhoRestos, nomeCredor, codCredor, valorParcela, BigDecimal.ZERO, fichaDotacao, desdobramento, dataEmpenho, valorEmpenho);
                         emLocal.persist(restosInscritos);
+
+                        RestosFonteRec restosFonteRec = new RestosFonteRec(anoEmpenhoRestos, empenhoRestos, versaoRecurso, fonteRecurso, 999, 0, valorEmpenho);
+                        emLocal.persist(restosFonteRec);
+                    }
+
+                    RestosProcParc restosProcParc = emLocal.find(RestosProcParc.class, new RestosProcParcPK(anoEmpenhoRestos, empenhoRestos, parcela));
+                    if(Objects.isNull(restosProcParc)){
+                        restosProcParc = new RestosProcParc(anoEmpenhoRestos, empenhoRestos, parcela, vencimento, valorParcela);
+                        emLocal.persist(restosProcParc);
                     }
 
                     // Cadastrando Conta Extra
@@ -337,7 +346,9 @@ public class ImportaPagamento extends Util {
         delete("CBPDESCONTOSOP", anoAtual);
         delete("CBPDOCPAGTO", anoAtual);
 
-        delete("CBPRESTOSINSCRITOS", anoAtual);
+        delete("CBPRESTOSINSCRITOS");
+        delete("CBPRESTOSPROCPARC");
+        delete("CBPRESTOSFONTEREC");
 
         delete("CBPORDENSPAGTO", anoAtual);
         delete("CBPPAGTOOPS", anoAtual);

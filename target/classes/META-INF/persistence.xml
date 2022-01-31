@@ -241,6 +241,19 @@
         <class>_Entity.RestosProcParc</class>
         <class>_Entity.RestosProcParcPK</class>
 
+        <class>_Entity.CreditoDotacao</class>
+        <class>_Entity.CreditoDotacaoPK</class>
+        <class>_Entity.ElemCreditados</class>
+        <class>_Entity.ElemCreditadosPK</class>
+        <class>_Entity.ElemCredMes</class>
+        <class>_Entity.ElemCredMesPK</class>
+        <class>_Entity.ElemAnulados</class>
+        <class>_Entity.ElemAnuladosPK</class>
+        <class>_Entity.ElemAnulMes</class>
+        <class>_Entity.ElemAnulMesPK</class>
+        <class>_Entity.ElemCredDistrib</class>
+        <class>_Entity.ElemCredDistribPK</class>
+
         <properties>
             <property name="dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
             <property name="connection.driver_class" value="oracle.jdbc.driver.OracleDriver"/>
