@@ -1,6 +1,6 @@
 package Cidades.TresCoracoes;
 
-import _Entity.AnulacaoEmpenho;
+import _Entity.AnulacaoLiquida;
 import _Infra.Util;
 
 import javax.persistence.EntityManager;
@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class ImportaAnulacaoEmpenho extends Util {
+public class ImportaAnulacaoLiquidacao extends Util {
 
     public static void main(String[] args) {
         init(2021);
@@ -27,13 +27,13 @@ public class ImportaAnulacaoEmpenho extends Util {
         ResultSet rs = null;
 
         String teste, historico;
-        Integer empenho, anulacao;
+        Integer empenho, liquidacao, anulacao;
         BigDecimal valor;
         Date anoAtual, data;
 
         anoAtual = java.sql.Date.valueOf(anoSonner + "-01-01");
 
-        delete("CBPANULACAOEMPENHO", anoAtual);
+        delete("CBPANULACAOLIQUIDA", anoAtual);
 
         emLocal.getTransaction().begin();
 
@@ -43,25 +43,33 @@ public class ImportaAnulacaoEmpenho extends Util {
         System.out.println("INICIANDO IMPORTAÇÃO ANULAÇÂO EMPENHOS: " + anoSonner);
         try {
             stmt = con.prepareStatement(
-                    "SELECT NRO_EMPENHO_ANULADO, DAT_EMPENHO_ANULADO, HST_EMPENHO_ANULADO, VLR_EMPENHO_ANULADO " +
-                            "FROM DBO.CT_EMPENHO_ANULADO " +
-                            "WHERE ANO_EMPENHO_ANULADO = ? " +
-                            "and SEQ_CT_UNIDADE_GESTORA = 21" +
-                            "order by 1 ");
+                    "SELECT " +
+                            "    NRO_EMPENHO, " +
+                            "    NRO_LIQUIDACAO_EMPENHO, " +
+                            "    DAT_LIQUIDACAO_ANULADA, " +
+                            "    VLR_LIQUIDACAO_ANULADA, " +
+                            "    HST_LIQUIDACAO_ANULADA " +
+                            "FROM " +
+                            "    vw_CT_LIQUIDACAO_ANULADA " +
+                            "WHERE " +
+                            "    ANO_LIQUIDACAO_ANULADA = ? " +
+                            "AND SEQ_CT_UNIDADE_GESTORA = 21" +
+                            "ORDER BY 1,2,3 ");
             stmt.setInt(1, anoSonner);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 empenho = rs.getInt(1);
-                data = rs.getDate(2);
-                historico = rs.getString(3).trim().toUpperCase();
+                liquidacao = rs.getInt(2);
+                data = rs.getDate(3);
                 valor = rs.getBigDecimal(4);
+                historico = rs.getString(5).trim().toUpperCase();
 
                 System.out.println("Ano: " + anoSonner + " - Empenho: " + empenho);
 
-                anulacao = getMaxAnulacao(emLocal, anoAtual, empenho);
+                anulacao = getMaxAnulacao(emLocal, anoAtual, empenho, liquidacao);
 
-                AnulacaoEmpenho anulacaoEmpenho = new AnulacaoEmpenho(anoAtual, empenho, anulacao, data, valor, historico);
-                emLocal.persist(anulacaoEmpenho);
+                AnulacaoLiquida anulacaoLiquida = new AnulacaoLiquida(anoAtual, empenho, liquidacao, anulacao, data, valor, historico);
+                emLocal.persist(anulacaoLiquida);
             }
             stmt.close();
             rs.close();
@@ -73,10 +81,11 @@ public class ImportaAnulacaoEmpenho extends Util {
         }
     }
 
-    private static int getMaxAnulacao(EntityManager em, Date ano, Integer empenho) {
-        Query q = em.createQuery("Select MAX(a.id.anulacao) from AnulacaoEmpenho a where a.id.ano = :ano  and a.id.empenho = :empenho ")
+    private static int getMaxAnulacao(EntityManager em, Date ano, Integer empenho, Integer liquidacao) {
+        Query q = em.createQuery("Select MAX(a.id.anulacao) from AnulacaoLiquida a where a.id.ano = :ano  and a.id.empenho = :empenho and a.id.liquidacao = :liquidacao ")
                 .setParameter("ano", ano)
-                .setParameter("empenho", empenho);
+                .setParameter("empenho", empenho)
+                .setParameter("liquidacao", liquidacao);
         Integer max = (Integer) q.getSingleResult();
         max = (max == null) ? 0 : max;
         max++;

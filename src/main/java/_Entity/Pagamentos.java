@@ -25,12 +25,13 @@ public class Pagamentos implements Serializable {
     private BigDecimal valorParcela;
     private BigDecimal valorPagamento;
     private BigDecimal desconto;
+    private Integer seqImportacao;
 
     public Pagamentos() {
         this.id = new PagamentosPK();
     }
 
-    public Pagamentos(Date ano, Integer empenho, Integer pagamento, Date dataSubEmpenho, Date vencimento, String historico, BigDecimal valorParcela, Date dataPagamento, BigDecimal valorPagamento, BigDecimal desconto) {
+    public Pagamentos(Date ano, Integer empenho, Integer pagamento, Date dataSubEmpenho, Date vencimento, String historico, BigDecimal valorParcela, Date dataPagamento, BigDecimal valorPagamento, BigDecimal desconto, Integer seqImportacao) {
         this.id = new PagamentosPK(ano, empenho, pagamento);
         this.dataPagamento = dataPagamento;
         this.dataSubEmpenho = dataSubEmpenho;
@@ -39,6 +40,7 @@ public class Pagamentos implements Serializable {
         this.valorParcela = valorParcela;
         this.valorPagamento = valorPagamento;
         this.desconto = desconto;
+        this.seqImportacao = seqImportacao;
     }
 
     public PagamentosPK getId() {
@@ -105,4 +107,11 @@ public class Pagamentos implements Serializable {
         this.desconto = desconto;
     }
 
+    public Integer getSeqImportacao() {
+        return seqImportacao;
+    }
+
+    public void setSeqImportacao(Integer seqImportacao) {
+        this.seqImportacao = seqImportacao;
+    }
 }

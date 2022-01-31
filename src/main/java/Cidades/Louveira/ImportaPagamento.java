@@ -137,7 +137,7 @@ public class ImportaPagamento extends Util {
                         LiquidaPagto liquidaPagto = new LiquidaPagto(anoAtual, documento, parcela, parcela);
                         emLocal.persist(liquidaPagto);
 
-                        Pagamentos pagamentos = new Pagamentos(anoAtual, documento, parcela, dataAutorizacao, vencimento, historico, valorParcela, null, null, null);
+                        Pagamentos pagamentos = new Pagamentos(anoAtual, documento, parcela, dataAutorizacao, vencimento, historico, valorParcela, null, null, null, null);
                         emLocal.persist(pagamentos);
 
                         //Pegando Data de Pagamento
