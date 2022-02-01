@@ -141,6 +141,8 @@
         <class>_Entity.ContasFonteRecursoPK</class>
         <class>_Entity.ContasCA</class>
         <class>_Entity.ContasCAPK</class>
+        <class>_Entity.ContasCXPlanoC</class>
+        <class>_Entity.ContasCXPlanoCPK</class>
 
         <class>_Entity.AnulaReceita</class>
         <class>_Entity.AnulaReceitaPK</class>
@@ -181,6 +183,8 @@
         <class>_Entity.EntradasCaixaPK</class>
         <class>_Entity.Cheque</class>
         <class>_Entity.ChequePK</class>
+        <class>_Entity.Transferencia</class>
+        <class>_Entity.TransferenciaPK</class>
 
         <class>_Entity.Empenhos</class>
         <class>_Entity.EmpenhosPK</class>

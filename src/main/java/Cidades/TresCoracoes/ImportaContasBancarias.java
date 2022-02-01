@@ -26,7 +26,7 @@ public class ImportaContasBancarias extends Util {
 
         Integer seqConta, bancoCodigo, ficha, fonteRecurso, versaoRecurso, empresa, anoFonte;
         String agenciaCodigo, conta, nome, dv, tipo, titular;
-        Date abertura, encerramento;
+        Date abertura, encerramento, anoAtual;
 
         delete("CBPBANCOS");
         delete("CBPAGENCIAS");
@@ -165,6 +165,7 @@ public class ImportaContasBancarias extends Util {
                     ContasBancarias contasBancarias = new ContasBancarias(ficha, bancoCodigo, agenciaCodigo, conta, "", nome, tipo, titular, bancoCodigo, agenciaCodigo, conta, empresa, encerramento, abertura);
                     emLocal.persist(contasBancarias);
 
+                    // Fonte Recurso
                     stmt2 = con.prepareStatement(
                             "SELECT " +
                                     "    ANO_CONTA_FONTE_RECURSO, " +
@@ -189,7 +190,6 @@ public class ImportaContasBancarias extends Util {
                         System.out.println("Conta: " + conta +  " - Fonte: " + fonteRecurso);
 
                         ContasFonteRecurso contasFonteRecurso = emLocal.find(ContasFonteRecurso.class, new ContasFonteRecursoPK(ficha, versaoRecurso, fonteRecurso));
-
                         if(Objects.isNull(contasFonteRecurso)) {
                             contasFonteRecurso = new ContasFonteRecurso(ficha, versaoRecurso, fonteRecurso, BigDecimal.ZERO);
                             emLocal.persist(contasFonteRecurso);
@@ -201,6 +201,13 @@ public class ImportaContasBancarias extends Util {
                             contasCA = new ContasCA(ficha, versaoRecurso, fonteRecurso, 999, 0, BigDecimal.ZERO);
                             emLocal.persist(contasCA);
                         }
+                    }
+
+                    // ContaCXPlanoC
+                    for (int i = 2015; i <= 2021; i++) {
+                        anoAtual = java.sql.Date.valueOf(i + "-01-01");
+                        ContasCXPlanoC contasCXPlanoC = new ContasCXPlanoC(anoAtual, ficha, bancoCodigo, agenciaCodigo, conta, 13, 18 );
+                        emLocal.persist(contasCXPlanoC);
                     }
                 }
             }

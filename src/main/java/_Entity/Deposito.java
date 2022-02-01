@@ -1,65 +1,68 @@
 package _Entity;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
-@Table(name = "CBPDEBITO")
-public class Debito implements Serializable {
+@Table(name = "CBPDEPOSITO")
+public class Deposito implements Serializable {
 
 	@EmbeddedId
-	private DebitoPK id;
+	private DepositoPK id;
 	private Integer banco;
 	private String agencia;
 	private String conta;
 	private String historico;
-
-	@Temporal(TemporalType.DATE)
+	private String origem;
 	private Date anoLancto;
 	private Integer lancamento;
-	private String tipoAnulacaoRec;
-	private Integer anulacaoReceita;
+	private String tipoGuia;
+	private Integer guia;
+	private Integer transferencia;
+	private BigDecimal valor;
+	private Integer empenho;
+	private Integer anulacao;
+	private Integer parcela;
 	private Integer versaoRecurso;
 	private Integer fonteRecurso;
 	private Integer caFixo;
 	private Integer caVariavel;
-	private String finalidade;
-	private Integer autPagto;
-	private Integer transferencia;
-	private BigDecimal valor;
 
-	public Debito() {
-		this.id = new DebitoPK();
+	public Deposito() {this.id = new DepositoPK();
 	}
 
-	public Debito(Integer fichaConta, Date data, Integer numero, Integer banco, String agencia, String conta, String historico, String tipoAnulacaoRec,
-				  Integer anulacaoReceita, BigDecimal valor, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, String finalidade, Integer autPagto, Integer transferencia, Date anoLancto, Integer lancamento) {
-		this.id = new DebitoPK(fichaConta, data, numero);
+	public Deposito(Integer fichaConta, Date data, Integer numero, Integer banco, String agencia, String conta, String historico, String origem, String tipoGuia, Integer guia,
+					Integer transferencia, BigDecimal valor, Integer empenho, Integer anulacao, Integer parcela, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, Date anoLancto, Integer lancamento) {
+		this.id = new DepositoPK(fichaConta, data, numero);
 		this.banco = banco;
 		this.agencia = agencia;
 		this.conta = conta;
 		this.historico = historico;
+		this.origem = origem;
 		this.anoLancto = anoLancto;
 		this.lancamento = lancamento;
-		this.tipoAnulacaoRec = tipoAnulacaoRec;
-		this.anulacaoReceita = anulacaoReceita;
+		this.tipoGuia = tipoGuia;
+		this.guia = guia;
+		this.transferencia = transferencia;
+		this.valor = valor;
+		this.empenho = empenho;
+		this.anulacao = anulacao;
+		this.parcela = parcela;
 		this.versaoRecurso = versaoRecurso;
 		this.fonteRecurso = fonteRecurso;
 		this.caFixo = caFixo;
 		this.caVariavel = caVariavel;
-		this.finalidade = finalidade;
-		this.autPagto = autPagto;
-		this.transferencia = transferencia;
-		this.valor = valor;
 	}
 
-	public DebitoPK getId() {
+	public DepositoPK getId() {
 		return id;
 	}
 
-	public void setId(DebitoPK id) {
+	public void setId(DepositoPK id) {
 		this.id = id;
 	}
 
@@ -95,6 +98,14 @@ public class Debito implements Serializable {
 		this.historico = historico;
 	}
 
+	public String getOrigem() {
+		return origem;
+	}
+
+	public void setOrigem(String origem) {
+		this.origem = origem;
+	}
+
 	public Date getAnoLancto() {
 		return anoLancto;
 	}
@@ -111,20 +122,28 @@ public class Debito implements Serializable {
 		this.lancamento = lancamento;
 	}
 
-	public String getTipoAnulacaoRec() {
-		return tipoAnulacaoRec;
+	public String getTipoGuia() {
+		return tipoGuia;
 	}
 
-	public void setTipoAnulacaoRec(String tipoAnulacaoRec) {
-		this.tipoAnulacaoRec = tipoAnulacaoRec;
+	public void setTipoGuia(String tipoGuia) {
+		this.tipoGuia = tipoGuia;
 	}
 
-	public Integer getAnulacaoReceita() {
-		return anulacaoReceita;
+	public Integer getGuia() {
+		return guia;
 	}
 
-	public void setAnulacaoReceita(Integer anulacaoReceita) {
-		this.anulacaoReceita = anulacaoReceita;
+	public void setGuia(Integer guia) {
+		this.guia = guia;
+	}
+
+	public Integer getTransferencia() {
+		return transferencia;
+	}
+
+	public void setTransferencia(Integer transferencia) {
+		this.transferencia = transferencia;
 	}
 
 	public BigDecimal getValor() {
@@ -133,6 +152,30 @@ public class Debito implements Serializable {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
+	}
+
+	public Integer getEmpenho() {
+		return empenho;
+	}
+
+	public void setEmpenho(Integer empenho) {
+		this.empenho = empenho;
+	}
+
+	public Integer getAnulacao() {
+		return anulacao;
+	}
+
+	public void setAnulacao(Integer anulacao) {
+		this.anulacao = anulacao;
+	}
+
+	public Integer getParcela() {
+		return parcela;
+	}
+
+	public void setParcela(Integer parcela) {
+		this.parcela = parcela;
 	}
 
 	public Integer getVersaoRecurso() {
@@ -166,29 +209,4 @@ public class Debito implements Serializable {
 	public void setCaVariavel(Integer caVariavel) {
 		this.caVariavel = caVariavel;
 	}
-
-	public String getFinalidade() {
-		return finalidade;
-	}
-
-	public void setFinalidade(String finalidade) {
-		this.finalidade = finalidade;
-	}
-
-	public Integer getAutPagto() {
-		return autPagto;
-	}
-
-	public void setAutPagto(Integer autPagto) {
-		this.autPagto = autPagto;
-	}
-
-	public Integer getTransferencia() {
-		return transferencia;
-	}
-
-	public void setTransferencia(Integer transferencia) {
-		this.transferencia = transferencia;
-	}
-
 }
