@@ -15,7 +15,7 @@ import java.util.Date;
 public class ImportaGuiaReceita extends Util {
 
     public static void main(String[] args) {
-        init(2021);
+        init(2016);
     }
 
     public static void init(int anoSonner) {
@@ -46,10 +46,10 @@ public class ImportaGuiaReceita extends Util {
         emLocal.getTransaction().begin();
 
         teste = "";
-        //teste = "and NRO_DOCUMENTO = '992' ";
+//        teste = "and NRO_DOCUMENTO = '1001' ";
 
-        orcamentaria = false;
-        extraOrcamentaria = false;
+        orcamentaria = true;
+        extraOrcamentaria = true;
         lancamentoDedutora = true;
 
         try {
@@ -62,7 +62,6 @@ public class ImportaGuiaReceita extends Util {
                         "SELECT distinct " +
                                 "    NRO_DOCUMENTO, " +
                                 "    DAT_DOCUMENTO, " +
-                                "    DAT_DOCUMENTO_BANCO, " +
                                 "    HST_DOCUMENTO " +
                                 "FROM " +
                                 "    VW_CT_ARRECADACAO_INTEGRACAO " +
@@ -76,14 +75,15 @@ public class ImportaGuiaReceita extends Util {
                 while (rs.next()) {
                     numeroDocumento = rs.getString(1);
                     dataGuia = rs.getDate(2);
-                    recebimento = rs.getDate(3);
-                    historico = rs.getString(4);
+                    historico = rs.getString(3).toUpperCase().trim();
+
+                    historico = historico.length() > 250 ? historico.substring(0, 250) : historico;
 
                     guia = Integer.parseInt(numeroDocumento);
 
                     System.out.println("Guia: " + numeroDocumento);
 
-                    GuiaReceita guiaReceita = new GuiaReceita(anoAtual, tipoReceita, guia, 1, dataGuia, dataGuia, recebimento, historico, "DIG", null);
+                    GuiaReceita guiaReceita = new GuiaReceita(anoAtual, tipoReceita, guia, 1, dataGuia, dataGuia, dataGuia, historico, "DIG", null);
                     emLocal.persist(guiaReceita);
 
                     // Itens da Guia
@@ -93,7 +93,7 @@ public class ImportaGuiaReceita extends Util {
                     recContaBanco(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento);
 
                     // Financeiro
-                    financeiro(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento, recebimento);
+                    financeiro(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento, dataGuia);
                 }
                 stmt.close();
                 rs.close();
@@ -108,7 +108,6 @@ public class ImportaGuiaReceita extends Util {
                         "SELECT distinct " +
                                 "    NRO_DOCUMENTO, " +
                                 "    DAT_DOCUMENTO, " +
-                                "    DAT_DOCUMENTO_BANCO, " +
                                 "    HST_DOCUMENTO " +
                                 "FROM " +
                                 "    VW_CT_ARRECADACAO_INTEGRACAO " +
@@ -122,8 +121,7 @@ public class ImportaGuiaReceita extends Util {
                 while (rs.next()) {
                     numeroDocumento = rs.getString(1);
                     dataGuia = rs.getDate(2);
-                    recebimento = rs.getDate(3);
-                    historico = rs.getString(4);
+                    historico = rs.getString(3).toUpperCase().trim();
 
                     historico = historico.length() > 250 ? historico.substring(0, 250) : historico;
 
@@ -131,7 +129,7 @@ public class ImportaGuiaReceita extends Util {
 
                     System.out.println("Guia: " + numeroDocumento);
 
-                    GuiaReceita guiaReceita = new GuiaReceita(anoAtual, tipoReceita, guia, 1, dataGuia, dataGuia, recebimento, historico, "DIG", null);
+                    GuiaReceita guiaReceita = new GuiaReceita(anoAtual, tipoReceita, guia, 1, dataGuia, dataGuia, dataGuia, historico, "DIG", null);
                     emLocal.persist(guiaReceita);
 
                     // Itens da Guia
@@ -141,7 +139,7 @@ public class ImportaGuiaReceita extends Util {
                     recContaBanco(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento);
 
                     // Financeiro
-                    financeiro(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento, recebimento);
+                    financeiro(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento, dataGuia);
                 }
                 stmt.close();
                 rs.close();
@@ -156,7 +154,6 @@ public class ImportaGuiaReceita extends Util {
                         "SELECT distinct " +
                                 "    NRO_DOCUMENTO, " +
                                 "    DAT_DOCUMENTO, " +
-                                "    DAT_DOCUMENTO_BANCO, " +
                                 "    HST_DOCUMENTO " +
                                 "FROM " +
                                 "    VW_CT_ARRECADACAO_INTEGRACAO " +
@@ -170,8 +167,9 @@ public class ImportaGuiaReceita extends Util {
                 while (rs.next()) {
                     numeroDocumento = rs.getString(1);
                     dataGuia = rs.getDate(2);
-                    recebimento = rs.getDate(3);
-                    historico = rs.getString(4);
+                    historico = rs.getString(3).toUpperCase().trim();
+
+                    historico = historico.length() > 250 ? historico.substring(0, 250) : historico;
 
                     guia = Integer.parseInt(numeroDocumento);
 
@@ -187,7 +185,7 @@ public class ImportaGuiaReceita extends Util {
                     recContaBanco(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento);
 
                     // Financeiro
-                    financeiro(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento, recebimento);
+                    financeiro(emLocal, con, receitaTipo, anoSonner, tipoReceita, guia, versaoRecurso, numeroDocumento, dataGuia);
                 }
                 stmt.close();
                 rs.close();
