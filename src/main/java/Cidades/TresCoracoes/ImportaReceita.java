@@ -70,7 +70,15 @@ public class ImportaReceita extends Util {
                 TabReceitas tabReceitas = emLocal.find(TabReceitas.class, new TabReceitasPK(anoAtual, receita));
 
                 if (Objects.isNull(tabReceitas)) {
-                    tabReceitas = new TabReceitas(anoAtual, receita, tipo, nomeReceita, null, "S", BigDecimal.ZERO, 0, 0);
+                    tabReceitas = new TabReceitas();
+                    tabReceitas.getId().setAno(anoAtual);
+                    tabReceitas.getId().setReceita(receita);
+                    tabReceitas.setTipoConta(tipo);
+                    tabReceitas.setNome(nomeReceita);
+                    tabReceitas.setOrigemNaLei("S");
+                    tabReceitas.setPercentual(BigDecimal.ZERO);
+                    tabReceitas.setRecDividaAtiva(0);
+                    tabReceitas.setDeducao(0);
                     emLocal.persist(tabReceitas);
                 }
             }
@@ -108,23 +116,48 @@ public class ImportaReceita extends Util {
                 arrecadaProporc = percentual.signum() == 0 ? false : true;
 
                 TabReceitas tabReceitas = emLocal.find(TabReceitas.class, new TabReceitasPK(anoAtual, receita));
-
                 if (Objects.isNull(tabReceitas)) {
-                    tabReceitas = new TabReceitas(anoAtual, receita, "A", nomeReceita, null, "S", BigDecimal.ZERO, 0, 0);
+                    tabReceitas = new TabReceitas();
+                    tabReceitas.getId().setAno(anoAtual);
+                    tabReceitas.getId().setReceita(receita);
+                    tabReceitas.setTipoConta("A");
+                    tabReceitas.setNome(nomeReceita);
+                    tabReceitas.setOrigemNaLei("S");
+                    tabReceitas.setPercentual(BigDecimal.ZERO);
+                    tabReceitas.setRecDividaAtiva(0);
+                    tabReceitas.setDeducao(0);
                     emLocal.persist(tabReceitas);
                 }
 
                 Receitas receitas = emLocal.find(Receitas.class, new ReceitasPK(anoAtual, ficha));
-
                 if (Objects.isNull(receitas)) {
-                    receitas = new Receitas(anoAtual, 5, ficha, receita, arrecadaProporc, orcado);
+                    receitas = new Receitas();
+                    receitas.getId().setAno(anoAtual);
+                    receitas.getId().setFicha(ficha);
+                    receitas.setReceita(receita);
+                    receitas.setArrecadaProporc(arrecadaProporc);
+                    receitas.setEmpresa(5);
+                    receitas.setOrcado(orcado);
                     emLocal.persist(receitas);
                 }
 
-                ReceitaFonteRecurso receitaFonteRecurso = new ReceitaFonteRecurso(anoAtual, ficha, versaoRecurso, fonteRecurso, percentual, orcadoFonteRecurso);
+                ReceitaFonteRecurso receitaFonteRecurso = new ReceitaFonteRecurso();
+                receitaFonteRecurso.getId().setAno(anoAtual);
+                receitaFonteRecurso.getId().setFichaReceita(ficha);
+                receitaFonteRecurso.getId().setVersaoRecurso(versaoRecurso);
+                receitaFonteRecurso.getId().setFonteRecurso(fonteRecurso);
+                receitaFonteRecurso.setPercentual(percentual);
+                receitaFonteRecurso.setOrcado(orcadoFonteRecurso);
                 emLocal.persist(receitaFonteRecurso);
 
-                ReceitasCA receitasCA = new ReceitasCA(anoAtual, ficha, versaoRecurso, fonteRecurso, 999, 0, orcadoFonteRecurso);
+                ReceitasCA receitasCA = new ReceitasCA();
+                receitasCA.getId().setAno(anoAtual);
+                receitasCA.getId().setFicha(ficha);
+                receitasCA.getId().setVersaoRecurso(versaoRecurso);
+                receitasCA.getId().setFonteRecurso(fonteRecurso);
+                receitasCA.getId().setCaFixo(999);
+                receitasCA.getId().setCaVariavel(0);
+                receitasCA.setOrcado(orcadoFonteRecurso);
                 emLocal.persist(receitasCA);
 
                 subTotal = BigDecimal.ZERO;
@@ -136,7 +169,15 @@ public class ImportaReceita extends Util {
                         subTotal = subTotal.add(valor);
                     }
 
-                    ReceitaMensal receitaMensal = new ReceitaMensal(anoAtual, ficha, versaoRecurso, fonteRecurso, 999, 0, mes, valor);
+                    ReceitaMensal receitaMensal = new ReceitaMensal();
+                    receitaMensal.getId().setAno(anoAtual);
+                    receitaMensal.getId().setFicha(ficha);
+                    receitaMensal.getId().setVersaoRecurso(versaoRecurso);
+                    receitaMensal.getId().setFonteRecurso(fonteRecurso);
+                    receitaMensal.getId().setCaFixo(999);
+                    receitaMensal.getId().setCaVariavel(0);
+                    receitaMensal.getId().setMes(mes);
+                    receitaMensal.setOrcado(valor);
                     emLocal.persist(receitaMensal);
                 }
             }

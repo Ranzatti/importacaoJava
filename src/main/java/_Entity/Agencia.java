@@ -22,6 +22,14 @@ public class Agencia implements Serializable {
         this.nome = nome;
     }
 
+    public AgenciaPK getId() {
+        return id;
+    }
+
+    public void setId(AgenciaPK id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
     }

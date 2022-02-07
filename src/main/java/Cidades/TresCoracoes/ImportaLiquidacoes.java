@@ -83,7 +83,13 @@ public class ImportaLiquidacoes extends Util {
 
                 LiquidacaoEmpenho liquidacaoEmpenho = emLocal.find(LiquidacaoEmpenho.class, new LiquidacaoEmpenhoPK(anoAtual, empenho, liquidacao));
                 if (Objects.isNull(liquidacaoEmpenho)) {
-                    liquidacaoEmpenho = new LiquidacaoEmpenho(anoAtual, empenho, liquidacao, dataLiquidacao, valorLiquidacao, historico);
+                    liquidacaoEmpenho = new LiquidacaoEmpenho();
+                    liquidacaoEmpenho.getId().setAno(anoAtual);
+                    liquidacaoEmpenho.getId().setEmpenho(empenho);
+                    liquidacaoEmpenho.getId().setLiquidacao(liquidacao);
+                    liquidacaoEmpenho.setDataLiquidacao(dataLiquidacao);
+                    liquidacaoEmpenho.setHistorico(historico);
+                    liquidacaoEmpenho.setValorLiquidacao(valorLiquidacao);
                     emLocal.persist(liquidacaoEmpenho);
                 } else {
                     valorLiquidacao = valorLiquidacao.add(liquidacaoEmpenho.getValorLiquidacao());
@@ -93,7 +99,11 @@ public class ImportaLiquidacoes extends Util {
 
                 parcela = getMaxParcela(emLocal, anoAtual, empenho);
 
-                LiquidaPagto liquidaPagto = new LiquidaPagto(anoAtual, empenho, liquidacao, parcela);
+                LiquidaPagto liquidaPagto = new LiquidaPagto();
+                liquidaPagto.getId().setAno(anoAtual);
+                liquidaPagto.getId().setEmpenho(empenho);
+                liquidaPagto.getId().setLiquidacao(liquidacao);
+                liquidaPagto.getId().setPagamento(parcela);
                 emLocal.persist(liquidaPagto);
 
                 // pegando total descontos
@@ -113,7 +123,16 @@ public class ImportaLiquidacoes extends Util {
 
                 valorDesconto = valorDesconto == null ? BigDecimal.ZERO : valorDesconto;
 
-                Pagamentos pagamentos = new Pagamentos(anoAtual, empenho, parcela, dataLiquidacao, dataVencimento, historico, valorLiquidacao, null, null, valorDesconto, seqLiquidacao);
+                Pagamentos pagamentos = new Pagamentos();
+                pagamentos.getId().setAno(anoAtual);
+                pagamentos.getId().setEmpenho(empenho);
+                pagamentos.getId().setPagamento(parcela);
+                pagamentos.setDataSubEmpenho(dataLiquidacao);
+                pagamentos.setVencimento(dataVencimento);
+                pagamentos.setHistorico(historico);
+                pagamentos.setValorParcela(valorLiquidacao);
+                pagamentos.setDesconto(valorDesconto);
+                pagamentos.setSeqImportacao(seqLiquidacao);
                 emLocal.persist(pagamentos);
 
                 if (valorDesconto.signum() > 0) {
@@ -151,7 +170,18 @@ public class ImportaLiquidacoes extends Util {
             fichaReceita = rs2.getInt(1);
             valorReceita = rs2.getBigDecimal(2);
 
-            DescontosTemp descontosTemp = new DescontosTemp(anoAtual, "E", empenho, parcela, "E", fichaReceita, versaoRecurso, 110, 999, 0, null, null, null, valorReceita);
+            DescontosTemp descontosTemp = new DescontosTemp();
+            descontosTemp.getId().setAno(anoAtual);
+            descontosTemp.getId().setTipoDoc("E");
+            descontosTemp.getId().setDocumento(empenho);
+            descontosTemp.getId().setParcela(parcela);
+            descontosTemp.getId().setTipoDesc("E");
+            descontosTemp.getId().setFicha(fichaReceita);
+            descontosTemp.getId().setVersaoRecurso(versaoRecurso);
+            descontosTemp.getId().setFonteRecurso(110);
+            descontosTemp.getId().setCaFixo(999);
+            descontosTemp.getId().setCaVariavel(0);
+            descontosTemp.setValor(valorReceita);
             emLocal.persist(descontosTemp);
         }
         stmt2.close();

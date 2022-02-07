@@ -82,17 +82,39 @@ public class ImportaRestosInscritos extends Util {
 
                 System.out.println(ano + " - " + empenho);
 
-                RestosInscritos restosInscritos = new RestosInscritos(anoEmpenho, empenho, nomeCredor, credor, valorProcessado, valorNaoProcessado, ficha, desdobramento, dataEmpenho, valorEmpenho);
+                RestosInscritos restosInscritos = new RestosInscritos();
+                restosInscritos.getId().setAno(anoEmpenho);
+                restosInscritos.getId().setEmpenho(empenho);
+                restosInscritos.setCodCredor(credor);
+                restosInscritos.setNomeCredor(nomeCredor);
+                restosInscritos.setFicha(ficha);
+                restosInscritos.setSubElemento(desdobramento);
+                restosInscritos.setDataEmpenho(dataEmpenho);
+                restosInscritos.setValorProcessado(valorProcessado);
+                restosInscritos.setValorNaoProcessado(valorNaoProcessado);
+                restosInscritos.setValorEmpenho(valorEmpenho);
                 emLocal.persist(restosInscritos);
 
                 // Fonte Recurso
-                RestosFonteRec restosFonteRec = new RestosFonteRec(anoEmpenho, empenho, 1, fonteRecurso, caFixo, caVariavel, valorProcessado.add(valorNaoProcessado));
+                RestosFonteRec restosFonteRec = new RestosFonteRec();
+                restosFonteRec.getId().setAno(anoEmpenho);
+                restosFonteRec.getId().setEmpenho(empenho);
+                restosFonteRec.setVersaoRecurso(1);
+                restosFonteRec.setFonteRecurso(fonteRecurso);
+                restosFonteRec.setCaFixo(caFixo);
+                restosFonteRec.setCaVariavel(caVariavel);
+                restosFonteRec.setValor(valorProcessado.add(valorNaoProcessado));
                 emLocal.persist(restosFonteRec);
 
                 // Proc Parc
                 if (valorProcessado.signum() > 0) {
                     ultimoDiaExercicio = java.sql.Date.valueOf(ano + "-12-31");
-                    RestosProcParc restosProcParc = new RestosProcParc(anoEmpenho, empenho, 1, ultimoDiaExercicio, valorProcessado);
+                    RestosProcParc restosProcParc = new RestosProcParc();
+                    restosProcParc.getId().setAnoEmpenho(anoEmpenho);
+                    restosProcParc.getId().setEmpenho(empenho);
+                    restosProcParc.getId().setParcela(1);
+                    restosProcParc.setVencimento(ultimoDiaExercicio);
+                    restosProcParc.setValor(valorProcessado);
                     emLocal.persist(restosProcParc);
                 }
             }

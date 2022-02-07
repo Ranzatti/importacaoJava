@@ -49,5 +49,11 @@ public class AnulacaoLiquidaPK implements Serializable {
 		this.liquidacao = liquidacao;
 	}
 
+	public int getAnulacao() {
+		return anulacao;
+	}
 
+	public void setAnulacao(int anulacao) {
+		this.anulacao = anulacao;
+	}
 }

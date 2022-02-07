@@ -20,7 +20,7 @@ public class AnulacaoLiquida implements Serializable {
 
 	public AnulacaoLiquida() { this.id = new AnulacaoLiquidaPK(); }
 
-	public AnulacaoLiquida(Date ano, Integer empenho, Integer liquidacao, Integer anulacao, Date data, BigDecimal valor, String historico) {
+	public AnulacaoLiquida(Date ano, Integer empenho, Integer liquidacao, Integer anulacao, Date data, String historico, BigDecimal valor) {
 		this.id = new AnulacaoLiquidaPK(ano, empenho, liquidacao, anulacao);
 		this.data = data;
 		this.valor = valor;

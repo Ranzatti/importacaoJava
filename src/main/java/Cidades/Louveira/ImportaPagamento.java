@@ -131,13 +131,30 @@ public class ImportaPagamento extends Util {
 
                         parcela = getMaxLiquidacao(emLocal, anoAtual, documento);
 
-                        LiquidacaoEmpenho liquidacaoEmpenho = new LiquidacaoEmpenho(anoAtual, documento, parcela, dataAutorizacao, valorParcela, historico);
+                        LiquidacaoEmpenho liquidacaoEmpenho = new LiquidacaoEmpenho();
+                        liquidacaoEmpenho.getId().setAno(anoAtual);
+                        liquidacaoEmpenho.getId().setEmpenho(documento);
+                        liquidacaoEmpenho.getId().setLiquidacao(parcela);
+                        liquidacaoEmpenho.setDataLiquidacao(dataAutorizacao);
+                        liquidacaoEmpenho.setHistorico(historico);
+                        liquidacaoEmpenho.setValorLiquidacao(valorParcela);
                         emLocal.persist(liquidacaoEmpenho);
 
-                        LiquidaPagto liquidaPagto = new LiquidaPagto(anoAtual, documento, parcela, parcela);
+                        LiquidaPagto liquidaPagto = new LiquidaPagto();
+                        liquidaPagto.getId().setAno(anoAtual);
+                        liquidaPagto.getId().setEmpenho(documento);
+                        liquidaPagto.getId().setLiquidacao(parcela);
+                        liquidaPagto.getId().setPagamento(parcela);
                         emLocal.persist(liquidaPagto);
 
-                        Pagamentos pagamentos = new Pagamentos(anoAtual, documento, parcela, dataAutorizacao, vencimento, historico, valorParcela, null, null, null, null);
+                        Pagamentos pagamentos = new Pagamentos();
+                        pagamentos.getId().setAno(anoAtual);
+                        pagamentos.getId().setEmpenho(documento);
+                        pagamentos.getId().setPagamento(parcela);
+                        pagamentos.setDataSubEmpenho(dataAutorizacao);
+                        pagamentos.setVencimento(vencimento);
+                        pagamentos.setHistorico(historico);
+                        pagamentos.setValorParcela(valorParcela);
                         emLocal.persist(pagamentos);
 
                         //Pegando Data de Pagamento
@@ -230,7 +247,8 @@ public class ImportaPagamento extends Util {
                             valorProcessado = valorParcela;
                             valorNaoProcessado = BigDecimal.ZERO;
 
-                            op(emLocal, anoAtual, nroOP, 0, fornecedor, 1, fonteRecurso, caFixo, caVariavel, dataAutorizacao, null, anoDocumento, documento, parcela, valorParcela, valorProcessado, valorNaoProcessado, historicoRestosPagar);
+                            op(emLocal, anoAtual, nroOP, 0, fornecedor, 1, fonteRecurso, caFixo, caVariavel, dataAutorizacao, anoDocumento, documento, parcela,
+                                    valorParcela, valorProcessado, valorNaoProcessado, historicoRestosPagar);
                         } else {
                             // NÃO PROCESSADO
 
@@ -239,12 +257,26 @@ public class ImportaPagamento extends Util {
 
                             liquidacao = getMaxLiquidacaoResto(emLocal, anoDocumento, documento);
 
-                            LiquidaRestos liquidaRestos = new LiquidaRestos(anoDocumento, documento, liquidacao, dataAutorizacao, historicoRestosPagar, dataAutorizacao, null, valorNaoProcessado);
+                            LiquidaRestos liquidaRestos = new LiquidaRestos();
+                            liquidaRestos.getId().setAnoEmpenho(anoDocumento);
+                            liquidaRestos.getId().setEmpenho(documento);
+                            liquidaRestos.getId().setLiquidacao(liquidacao);
+                            liquidaRestos.setDataLiquidacao(dataAutorizacao);
+                            liquidaRestos.setHistorico(historicoRestosPagar);
+                            liquidaRestos.setVencimento(dataAutorizacao);
+                            liquidaRestos.setValor(valorNaoProcessado);
                             emLocal.persist(liquidaRestos);
 
-                            op(emLocal, anoAtual, nroOP, 0, fornecedor, 1, fonteRecurso, caFixo, caVariavel, dataAutorizacao, null, anoDocumento, documento, parcela, valorParcela, valorProcessado, valorNaoProcessado, historicoRestosPagar);
+                            op(emLocal, anoAtual, nroOP, 0, fornecedor, 1, fonteRecurso, caFixo, caVariavel, dataAutorizacao, anoDocumento, documento, parcela,
+                                    valorParcela, valorProcessado, valorNaoProcessado, historicoRestosPagar);
 
-                            LiqRestCronogra liqRestCronogra = new LiqRestCronogra(anoDocumento, documento, liquidacao, liquidacao, anoAtual, nroOP);
+                            LiqRestCronogra liqRestCronogra = new LiqRestCronogra();
+                            liqRestCronogra.getId().setAnoEmpenho(anoDocumento);
+                            liqRestCronogra.getId().setEmpenho(documento);
+                            liqRestCronogra.getId().setLiquidacao(liquidacao);
+                            liqRestCronogra.getId().setParcela(liquidacao);
+                            liqRestCronogra.getId().setAnoOP(anoAtual);
+                            liqRestCronogra.getId().setNroOP(nroOP);
                             emLocal.persist(liqRestCronogra);
                         }
 
@@ -266,7 +298,15 @@ public class ImportaPagamento extends Util {
 
                             updatePagamento(emLocal, anoAtual, tipoDoc, nroOP, parcela, dataPagamento, valorPago, valorDesconto);
 
-                            BaixaRestos baixaRestos = new BaixaRestos(anoDocumento, documento, anoAtual, nroOP, dataPagamento, valorPago, valorNaoProcessado, valorProcessado);
+                            BaixaRestos baixaRestos = new BaixaRestos();
+                            baixaRestos.getId().setAno(anoDocumento);
+                            baixaRestos.getId().setEmpenho(documento);
+                            baixaRestos.getId().setAnoOP(anoAtual);
+                            baixaRestos.getId().setNroOP(nroOP);
+                            baixaRestos.setDataBaixa(dataPagamento);
+                            baixaRestos.setValorBaixa(valorPago);
+                            baixaRestos.setValorProcessado(valorProcessado);
+                            baixaRestos.setValorNaoProcessado(valorNaoProcessado);
                             emLocal.persist(baixaRestos);
 
                             documento = nroOP;
@@ -287,16 +327,24 @@ public class ImportaPagamento extends Util {
 //                        System.out.println("Autorizacaoo - " + autorizacao + " - TipoDoc: " + tipoDoc + " - Documento: " + documento + " - Parcela: " + parcela + " [" + opgSeq + "]");
 
                         AutPagto autPagto = emLocal.find(AutPagto.class, new AutPagtoPK(anoAtual, autorizacao));
-
                         if (Objects.isNull(autPagto)) {
-                            autPagto = new AutPagto(anoAtual, autorizacao, dataAutorizacao, dataAutorizacao, historico);
+                            autPagto = new AutPagto();
+                            autPagto.getId().setAno(anoAtual);
+                            autPagto.getId().setNumero(autorizacao);
+                            autPagto.setDataAutorizacao(dataAutorizacao);
+                            autPagto.setDataPagamento(dataAutorizacao);
+                            autPagto.setDescricao(historico);
                             emLocal.persist(autPagto);
                         }
 
                         ItensAutPagto itensAutPagto = emLocal.find(ItensAutPagto.class, new ItensAutPagtoPK(anoAtual, autorizacao, tipoDoc, documento, parcela));
-
                         if (Objects.isNull(itensAutPagto)) {
-                            itensAutPagto = new ItensAutPagto(anoAtual, autorizacao, tipoDoc, documento, parcela);
+                            itensAutPagto = new ItensAutPagto();
+                            itensAutPagto.getId().setAno(anoAtual);
+                            itensAutPagto.getId().setAutorizacao(autorizacao);
+                            itensAutPagto.getId().setTipoDoc(tipoDoc);
+                            itensAutPagto.getId().setDocumento(documento);
+                            itensAutPagto.getId().setParcela(parcela);
                             emLocal.persist(itensAutPagto);
                         }
 
@@ -330,15 +378,39 @@ public class ImportaPagamento extends Util {
         }
     }
 
-    private static void op(EntityManager emLocal, Date anoAtual, Integer nroOP, Integer ficha, Integer fornecedor, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, Date dataAutorizacao, Date dataPagamento, Date anoDocumento, Integer documento, Integer parcela,
-                           BigDecimal valorParcela, BigDecimal valorProcessado, BigDecimal valorNaoProcessado, String historicoRestosPagar) {
-        OrdensPagto ordensPagto = new OrdensPagto(anoAtual, nroOP, ficha, fornecedor, dataAutorizacao, historicoRestosPagar, valorParcela, dataAutorizacao, BigDecimal.ZERO, anoDocumento, documento, parcela, valorProcessado, valorNaoProcessado);
+    private static void op(EntityManager emLocal, Date anoAtual, Integer nroOP, Integer ficha, Integer fornecedor, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel,
+                           Date dataAutorizacao, Date anoDocumento, Integer documento, Integer parcela, BigDecimal valorParcela, BigDecimal valorProcessado, BigDecimal valorNaoProcessado, String historicoRestosPagar) {
+        OrdensPagto ordensPagto = new OrdensPagto();
+        ordensPagto.getId().setAno(anoAtual);
+        ordensPagto.getId().setNumero(nroOP);
+        ordensPagto.setFicha(ficha);
+        ordensPagto.setFornecedor(fornecedor);
+        ordensPagto.setData(dataAutorizacao);
+        ordensPagto.setHistorico(historicoRestosPagar);
+        ordensPagto.setValorOP(valorParcela);
+        ordensPagto.setVencimento(dataAutorizacao);
+        ordensPagto.setDesconto(BigDecimal.ZERO);
+        ordensPagto.setAnoRestos(anoDocumento);
+        ordensPagto.setEmpenhoRestos(documento);
+        ordensPagto.setParcelaRestos(parcela);
+        ordensPagto.setValorProcessado(valorProcessado);
+        ordensPagto.setValorNaoProcessado(valorNaoProcessado);
         emLocal.persist(ordensPagto);
 
-        PagtoOP pagtoOP = new PagtoOP(anoAtual, nroOP, dataPagamento, valorParcela);
+        PagtoOP pagtoOP = new PagtoOP();
+        pagtoOP.getId().setAno(anoAtual);
+        pagtoOP.getId().setNumero(nroOP);
+        pagtoOP.setValorPagto(valorParcela);
         emLocal.persist(pagtoOP);
 
-        OPFonteRecurso opFonteRecurso = new OPFonteRecurso(anoAtual, nroOP, versaoRecurso, fonteRecurso, caFixo, caVariavel, valorParcela);
+        OPFonteRecurso opFonteRecurso = new OPFonteRecurso();
+        opFonteRecurso.getId().setAno(anoAtual);
+        opFonteRecurso.getId().setNumero(nroOP);
+        opFonteRecurso.setVersaoRecurso(versaoRecurso);
+        opFonteRecurso.setFonteRecurso(fonteRecurso);
+        opFonteRecurso.setCaFixo(caFixo);
+        opFonteRecurso.setCaVariavel(caVariavel);
+        opFonteRecurso.setValor(valorParcela);
         emLocal.persist(opFonteRecurso);
     }
 
@@ -349,7 +421,7 @@ public class ImportaPagamento extends Util {
         Date dataEmissao;
         String notaFiscalNro;
         BigDecimal valor;
-        Integer notaFiscalTipo;
+        Integer tipoDocPagto;
 
         try {
             stmtAux = con.prepareStatement(
@@ -361,35 +433,44 @@ public class ImportaPagamento extends Util {
             while (rsAux.next()) {
                 dataEmissao = rsAux.getDate(1);
                 notaFiscalNro = rsAux.getString(2).trim();
-                notaFiscalTipo = rsAux.getInt(3);
+                tipoDocPagto = rsAux.getInt(3);
                 valor = rsAux.getBigDecimal(4);
 
                 //Tipo Documentos 0=Nota Fiscal, 1=Fatura, 2=Documento, 3=Oficio, 4=Recibo, 5=Folha de Pagamento, 6=Diaria, 7=Bilhete de Passagem, 8=Repasse de Recursos, 9=Documentos Diversos, 10=Nota Fiscal Eletronica, 11=Nota Fiscal Servicos'
-                switch (notaFiscalTipo) {
+                switch (tipoDocPagto) {
                     case 0:
-                        notaFiscalTipo = 1; // nota fiscal
+                        tipoDocPagto = 1; // nota fiscal
                         break;
                     case 1:
-                        notaFiscalTipo = 2; // fatura
+                        tipoDocPagto = 2; // fatura
                         break;
                     case 4:
-                        notaFiscalTipo = 7; // recibo
+                        tipoDocPagto = 7; // recibo
                         break;
                     case 5:
-                        notaFiscalTipo = 6; // folha de pagamento
+                        tipoDocPagto = 6; // folha de pagamento
                         break;
                     case 10:
-                        notaFiscalTipo = 10; // Nota Fiscal Eletronica
+                        tipoDocPagto = 10; // Nota Fiscal Eletronica
                         break;
                     default:
-                        notaFiscalTipo = 999; // outros
+                        tipoDocPagto = 999; // outros
                         break;
                 }
 
-                DocPagto docPagto = em.find(DocPagto.class, new DocPagtoPK(anoAtual, tipoDoc, documento, liquidacao, notaFiscalTipo, notaFiscalNro));
-
+                DocPagto docPagto = em.find(DocPagto.class, new DocPagtoPK(anoAtual, tipoDoc, documento, liquidacao, tipoDocPagto, notaFiscalNro));
                 if (Objects.isNull(docPagto)) {
-                    docPagto = new DocPagto(anoAtual, tipoDoc, documento, liquidacao, notaFiscalTipo, notaFiscalNro, dataEmissao, "Importacao Nota Fiscal SEQ: " + notaFiscalSeq, 1, valor);
+                    docPagto = new DocPagto();
+                    docPagto.getId().setAno(anoAtual);
+                    docPagto.getId().setTipoDoc(tipoDoc);
+                    docPagto.getId().setDocumento(documento);
+                    docPagto.getId().setParcela(liquidacao);
+                    docPagto.getId().setTipoDocPagto(tipoDocPagto);
+                    docPagto.getId().setDocumentoPagto(notaFiscalNro);
+                    docPagto.setDataEmissao(dataEmissao);
+                    docPagto.setDescricaoAdicional("Importacao Nota Fiscal SEQ: " + notaFiscalSeq);
+                    docPagto.setItem(1);
+                    docPagto.setValor(valor);
                     em.persist(docPagto);
                 }
             }
@@ -449,19 +530,19 @@ public class ImportaPagamento extends Util {
                     documento = itensAutPagtos.get(0).getId().getDocumento();
                     parcela = itensAutPagtos.get(0).getId().getParcela();
 
-                    autPagtoFonteRec = new AutPagtoFonteRec(
-                            ano,
-                            autorizacao,
-                            debitos.get(i).getId().getFichaConta(),
-                            tipoDoc,
-                            documento,
-                            parcela,
-                            indice,
-                            1,
-                            debitos.get(i).getFonteRecurso(),
-                            debitos.get(i).getCaFixo(),
-                            debitos.get(i).getCaVariavel(),
-                            debitos.get(i).getValor());
+                    autPagtoFonteRec = new AutPagtoFonteRec();
+                    autPagtoFonteRec.getId().setAno(ano);
+                    autPagtoFonteRec.getId().setAutorizacao(autorizacao);
+                    autPagtoFonteRec.getId().setFichaBanco(debitos.get(0).getId().getFichaConta());
+                    autPagtoFonteRec.getId().setTipoDoc(tipoDoc);
+                    autPagtoFonteRec.getId().setDocumento(documento);
+                    autPagtoFonteRec.getId().setParcela(parcela);
+                    autPagtoFonteRec.getId().setVersaoRecurso(1);
+                    autPagtoFonteRec.getId().setFonteRecurso(debitos.get(0).getFonteRecurso());
+                    autPagtoFonteRec.getId().setCaFixo(debitos.get(0).getCaFixo());
+                    autPagtoFonteRec.getId().setCaVariavel(debitos.get(0).getCaVariavel());
+                    autPagtoFonteRec.getId().setSequencial(indice);
+                    autPagtoFonteRec.setValor(debitos.get(i).getValor());
                     em.persist(autPagtoFonteRec);
                     indice++;
                 }
@@ -479,19 +560,19 @@ public class ImportaPagamento extends Util {
                     documento = itensAutPagtos.get(0).getId().getDocumento();
                     parcela = itensAutPagtos.get(0).getId().getParcela();
 
-                    autPagtoFonteRec = new AutPagtoFonteRec(
-                            ano,
-                            autorizacao,
-                            cheques.get(i).getId().getFichaConta(),
-                            tipoDoc,
-                            documento,
-                            parcela,
-                            indice,
-                            1,
-                            cheques.get(i).getFonteRecurso(),
-                            cheques.get(i).getCaFixo(),
-                            cheques.get(i).getCaVariavel(),
-                            cheques.get(i).getValor());
+                    autPagtoFonteRec = new AutPagtoFonteRec();
+                    autPagtoFonteRec.getId().setAno(ano);
+                    autPagtoFonteRec.getId().setAutorizacao(autorizacao);
+                    autPagtoFonteRec.getId().setFichaBanco(cheques.get(0).getId().getFichaConta());
+                    autPagtoFonteRec.getId().setTipoDoc(tipoDoc);
+                    autPagtoFonteRec.getId().setDocumento(documento);
+                    autPagtoFonteRec.getId().setParcela(parcela);
+                    autPagtoFonteRec.getId().setVersaoRecurso(1);
+                    autPagtoFonteRec.getId().setFonteRecurso(cheques.get(0).getFonteRecurso());
+                    autPagtoFonteRec.getId().setCaFixo(cheques.get(0).getCaFixo());
+                    autPagtoFonteRec.getId().setCaVariavel(cheques.get(0).getCaVariavel());
+                    autPagtoFonteRec.getId().setSequencial(indice);
+                    autPagtoFonteRec.setValor(cheques.get(i).getValor());
                     em.persist(autPagtoFonteRec);
                     indice++;
                 }
@@ -529,19 +610,19 @@ public class ImportaPagamento extends Util {
                             }
                             valor = (BigDecimal) q.getSingleResult();
 
-                            autPagtoFonteRec = new AutPagtoFonteRec(
-                                    ano,
-                                    autorizacao,
-                                    debitos.get(0).getId().getFichaConta(),
-                                    tipoDoc,
-                                    documento,
-                                    parcela,
-                                    indice,
-                                    1,
-                                    debitos.get(0).getFonteRecurso(),
-                                    debitos.get(0).getCaFixo(),
-                                    debitos.get(0).getCaVariavel(),
-                                    valor);
+                            autPagtoFonteRec = new AutPagtoFonteRec();
+                            autPagtoFonteRec.getId().setAno(ano);
+                            autPagtoFonteRec.getId().setAutorizacao(autorizacao);
+                            autPagtoFonteRec.getId().setFichaBanco(debitos.get(0).getId().getFichaConta());
+                            autPagtoFonteRec.getId().setTipoDoc(tipoDoc);
+                            autPagtoFonteRec.getId().setDocumento(documento);
+                            autPagtoFonteRec.getId().setParcela(parcela);
+                            autPagtoFonteRec.getId().setVersaoRecurso(1);
+                            autPagtoFonteRec.getId().setFonteRecurso(debitos.get(0).getFonteRecurso());
+                            autPagtoFonteRec.getId().setCaFixo(debitos.get(0).getCaFixo());
+                            autPagtoFonteRec.getId().setCaVariavel(debitos.get(0).getCaVariavel());
+                            autPagtoFonteRec.getId().setSequencial(indice);
+                            autPagtoFonteRec.setValor(valor);
                             em.persist(autPagtoFonteRec);
                             indice++;
                         }
@@ -578,19 +659,19 @@ public class ImportaPagamento extends Util {
                             }
                             valor = (BigDecimal) q.getSingleResult();
 
-                            autPagtoFonteRec = new AutPagtoFonteRec(
-                                    ano,
-                                    autorizacao,
-                                    cheques.get(0).getId().getFichaConta(),
-                                    tipoDoc,
-                                    documento,
-                                    parcela,
-                                    indice,
-                                    1,
-                                    cheques.get(0).getFonteRecurso(),
-                                    cheques.get(0).getCaFixo(),
-                                    cheques.get(0).getCaVariavel(),
-                                    valor);
+                            autPagtoFonteRec = new AutPagtoFonteRec();
+                            autPagtoFonteRec.getId().setAno(ano);
+                            autPagtoFonteRec.getId().setAutorizacao(autorizacao);
+                            autPagtoFonteRec.getId().setFichaBanco(cheques.get(0).getId().getFichaConta());
+                            autPagtoFonteRec.getId().setTipoDoc(tipoDoc);
+                            autPagtoFonteRec.getId().setDocumento(documento);
+                            autPagtoFonteRec.getId().setParcela(parcela);
+                            autPagtoFonteRec.getId().setVersaoRecurso(1);
+                            autPagtoFonteRec.getId().setFonteRecurso(cheques.get(0).getFonteRecurso());
+                            autPagtoFonteRec.getId().setCaFixo(cheques.get(0).getCaFixo());
+                            autPagtoFonteRec.getId().setCaVariavel(cheques.get(0).getCaVariavel());
+                            autPagtoFonteRec.getId().setSequencial(indice);
+                            autPagtoFonteRec.setValor(valor);
                             em.persist(autPagtoFonteRec);
                             indice++;
                         }
@@ -818,18 +899,48 @@ public class ImportaPagamento extends Util {
                 guia = (guia == null) ? 0 : guia;
                 guia++;
 
-                guiaReceita = new GuiaReceita(anoAtual, tipoReceita, guia, 1, dataGuia, dataGuia, dataGuia, "Guia de Receita de desconto - IOSEQ: " + iopSeq, "AUT", autorizacao);
+                guiaReceita = new GuiaReceita();
+                guiaReceita.getId().setAno(anoAtual);
+                guiaReceita.getId().setTipo(tipoReceita);
+                guiaReceita.getId().setNumero(guia);
+                guiaReceita.setContribuinte(1);
+                guiaReceita.setDataGuia(dataGuia);
+                guiaReceita.setVencimento(dataGuia);
+                guiaReceita.setRecebimento(dataGuia);
+                guiaReceita.setHistorico("Guia de Receita de desconto - IOSEQ: " + iopSeq);
+                guiaReceita.setOrigem("AUT");
+                guiaReceita.setAutPagto(autorizacao);
                 em.persist(guiaReceita);
 
                 if (tipoDoc.equals("O")) {
-                    descontosOP = new DescontosOP(anoAtual, documento, parcela, tipoReceita, guia);
+                    descontosOP = new DescontosOP();
+                    descontosOP.getId().setAno(anoAtual);
+                    descontosOP.getId().setOp(documento);
+                    descontosOP.getId().setParcela(parcela);
+                    descontosOP.getId().setTipoGuia(tipoReceita);
+                    descontosOP.getId().setGuiaReceita(guia);
                     em.persist(descontosOP);
                 } else {
-                    descontosPagto = new DescontosPagto(anoAtual, documento, parcela, tipoReceita, guia);
+                    descontosPagto = new DescontosPagto();
+                    descontosPagto.getId().setAno(anoAtual);
+                    descontosPagto.getId().setEmpenho(documento);
+                    descontosPagto.getId().setParcela(parcela);
+                    descontosPagto.getId().setTipoGuia(tipoReceita);
+                    descontosPagto.getId().setGuiaReceita(guia);
                     em.persist(descontosPagto);
                 }
 
-                itensGuiaReceita = new ItensGuiaReceita(anoAtual, tipoReceita, guia, fichaReceita, 1, 1, 110, 0, codigoReceita, valorReceita);
+                itensGuiaReceita = new ItensGuiaReceita();
+                itensGuiaReceita.getId().setAno(anoAtual);
+                itensGuiaReceita.getId().setTipo(tipoReceita);
+                itensGuiaReceita.getId().setGuia(guia);
+                itensGuiaReceita.getId().setFicha(fichaReceita);
+                itensGuiaReceita.getId().setVersaoRecurso(1);
+                itensGuiaReceita.getId().setFonteRecurso(1);
+                itensGuiaReceita.getId().setCaFixo(110);
+                itensGuiaReceita.getId().setCaVariavel(0);
+                itensGuiaReceita.setReceita(codigoReceita);
+                itensGuiaReceita.setValor(valorReceita);
                 em.persist(itensGuiaReceita);
             }
             stmtAux.close();
@@ -849,21 +960,6 @@ public class ImportaPagamento extends Util {
         Integer parcela = (Integer) q.getSingleResult();
         parcela = (parcela == null) ? 0 : parcela;
         return parcela;
-
-//        Query q = em.createNativeQuery("select max(PARCELA) from CBPRESTOSPROCPARC where ANOEMPENHO = :ano and EMPENHO = :empenho and VALOR = :valor ")
-//                .setParameter("ano", ano)
-//                .setParameter("empenho", empenho)
-//                .setParameter("valor", valor);
-//        BigDecimal parcela = (BigDecimal) q.getSingleResult();
-//        parcela = (parcela == null) ? BigDecimal.ZERO: parcela;
-//        return parcela.intValue();
-
-//        BigDecimal parcelaBD = (BigDecimal) em.createNativeQuery("select max(PARCELA) from CBPRESTOSPROCPARC where ANOEMPENHO = :ano and EMPENHO = :empenho and VALOR = :valor ")
-//                .setParameter("ano", ano)
-//                .setParameter("empenho", empenho)
-//                .setParameter("valor", valor).getSingleResult();
-//        parcelaBD = (parcelaBD == null) ? BigDecimal.ZERO : parcelaBD;
-//        return parcelaBD.intValue();
     }
 
     private static void updatePagamento(EntityManager em, Date ano, String tipoDoc, Integer documento, Integer

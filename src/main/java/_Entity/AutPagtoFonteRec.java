@@ -19,7 +19,7 @@ public class AutPagtoFonteRec implements Serializable {
         this.id = new AutPagtoFonteRecPK();
     }
 
-    public AutPagtoFonteRec(Date ano, Integer autorizacao, Integer fichaBanco, String tipoDoc, Integer documento, Integer parcela, Integer sequencial, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, BigDecimal valor) {
+    public AutPagtoFonteRec(Date ano, Integer autorizacao, Integer fichaBanco, String tipoDoc, Integer documento, Integer parcela, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, Integer sequencial, BigDecimal valor) {
         this.id = new AutPagtoFonteRecPK(ano, autorizacao, fichaBanco, tipoDoc, documento, parcela, sequencial, versaoRecurso, fonteRecurso, caFixo, caVariavel);
         this.valor = valor;
     }

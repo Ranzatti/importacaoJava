@@ -24,7 +24,7 @@ public class ImportaContasBancarias extends Util {
         ResultSet rs = null;
         ResultSet rs2 = null;
 
-        Integer seqConta, bancoCodigo, ficha, fonteRecurso, versaoRecurso, empresa, anoFonte;
+        Integer seqConta, bancoCodigo, ficha, fonteRecurso, versaoRecurso, anoFonte;
         String agenciaCodigo, conta, nome, dv, tipo, titular;
         Date abertura, encerramento, anoAtual;
 
@@ -59,7 +59,9 @@ public class ImportaContasBancarias extends Util {
                 Banco banco = emLocal.find(Banco.class, bancoCodigo);
 
                 if (Objects.isNull(banco)) {
-                    banco = new Banco(bancoCodigo, nome);
+                    banco = new Banco();
+                    banco.setCodigo(bancoCodigo);
+                    banco.setNome(nome);
                     emLocal.persist(banco);
                 }
             }
@@ -87,9 +89,11 @@ public class ImportaContasBancarias extends Util {
                 nome = nome.length() > 50 ? nome.substring(0, 50) : nome;
 
                 Agencia agencia = emLocal.find(Agencia.class, new AgenciaPK(bancoCodigo, agenciaCodigo));
-
-                if(Objects.isNull(agencia)) {
-                    agencia = new Agencia(bancoCodigo, agenciaCodigo, nome);
+                if (Objects.isNull(agencia)) {
+                    agencia = new Agencia();
+                    agencia.getId().setBanco(bancoCodigo);
+                    agencia.getId().setCodigo(agenciaCodigo);
+                    agencia.setNome(nome);
                     emLocal.persist(agencia);
                 }
             }
@@ -110,7 +114,6 @@ public class ImportaContasBancarias extends Util {
                             "    SBL_CONTA_TIPO, " +
                             "    DAT_CONTA_CRIACAO, " +
                             "    DAT_CONTA_INATIVACAO, " +
-                            "    SEQ_GG_EMPRESA, " +
                             "    NOM_UNIDADE_GESTORA " +
                             "FROM " +
                             "    VW_CT_CONTA " +
@@ -128,8 +131,7 @@ public class ImportaContasBancarias extends Util {
                 tipo = rs.getString(7);
                 abertura = rs.getDate(8);
                 encerramento = rs.getDate(9);
-                empresa = rs.getInt(10);
-                titular = rs.getString(11);
+                titular = rs.getString(10);
 
                 nome = nome.length() > 250 ? nome.substring(0, 250) : nome;
                 titular = titular.length() > 50 ? titular.substring(0, 50) : titular;
@@ -162,7 +164,20 @@ public class ImportaContasBancarias extends Util {
                 ContasBancarias contas = emLocal.find(ContasBancarias.class, ficha);
 
                 if (Objects.isNull(contas)) {
-                    ContasBancarias contasBancarias = new ContasBancarias(ficha, bancoCodigo, agenciaCodigo, conta, "", nome, tipo, titular, bancoCodigo, agenciaCodigo, conta, empresa, encerramento, abertura);
+                    ContasBancarias contasBancarias = new ContasBancarias();
+                    contasBancarias.setFicha(ficha);
+                    contasBancarias.setBanco(bancoCodigo);
+                    contasBancarias.setAgencia(agenciaCodigo);
+                    contasBancarias.setCodigo(conta);
+                    contasBancarias.setNome(nome);
+                    contasBancarias.setTipoConta(tipo);
+                    contasBancarias.setTitular(titular);
+                    contasBancarias.setBancoAudesp(bancoCodigo);
+                    contasBancarias.setAgenciaAudesp(agenciaCodigo);
+                    contasBancarias.setContaAudesp(conta);
+                    contasBancarias.setEmpresa(5);
+                    contasBancarias.setEncerramento(encerramento);
+                    contasBancarias.setAbertura(abertura);
                     emLocal.persist(contasBancarias);
 
                     // Fonte Recurso
@@ -187,18 +202,27 @@ public class ImportaContasBancarias extends Util {
 
                         versaoRecurso = getVersao(anoFonte);
 
-                        System.out.println("Conta: " + conta +  " - Fonte: " + fonteRecurso);
+                        System.out.println("Conta: " + conta + " - Fonte: " + fonteRecurso);
 
                         ContasFonteRecurso contasFonteRecurso = emLocal.find(ContasFonteRecurso.class, new ContasFonteRecursoPK(ficha, versaoRecurso, fonteRecurso));
-                        if(Objects.isNull(contasFonteRecurso)) {
-                            contasFonteRecurso = new ContasFonteRecurso(ficha, versaoRecurso, fonteRecurso, BigDecimal.ZERO);
+                        if (Objects.isNull(contasFonteRecurso)) {
+                            contasFonteRecurso = new ContasFonteRecurso();
+                            contasFonteRecurso.getId().setFicha(ficha);
+                            contasFonteRecurso.getId().setVersaoRecurso(versaoRecurso);
+                            contasFonteRecurso.getId().setFonteRecurso(fonteRecurso);
+                            contasFonteRecurso.setSaldoInicial(BigDecimal.ZERO);
                             emLocal.persist(contasFonteRecurso);
                         }
 
                         ContasCA contasCA = emLocal.find(ContasCA.class, new ContasCAPK(ficha, versaoRecurso, fonteRecurso, 999, 0));
-
-                        if(Objects.isNull(contasCA)) {
-                            contasCA = new ContasCA(ficha, versaoRecurso, fonteRecurso, 999, 0, BigDecimal.ZERO);
+                        if (Objects.isNull(contasCA)) {
+                            contasCA = new ContasCA();
+                            contasCA.getId().setFicha(ficha);
+                            contasCA.getId().setVersaoRecurso(versaoRecurso);
+                            contasCA.getId().setFonteRecurso(fonteRecurso);
+                            contasCA.getId().setCaFixo(999);
+                            contasCA.getId().setCaVariavel(0);
+                            contasCA.setSaldoInicial(BigDecimal.ZERO);
                             emLocal.persist(contasCA);
                         }
                     }
@@ -206,7 +230,14 @@ public class ImportaContasBancarias extends Util {
                     // ContaCXPlanoC
                     for (int i = 2015; i <= 2021; i++) {
                         anoAtual = java.sql.Date.valueOf(i + "-01-01");
-                        ContasCXPlanoC contasCXPlanoC = new ContasCXPlanoC(anoAtual, ficha, bancoCodigo, agenciaCodigo, conta, 13, 18 );
+                        ContasCXPlanoC contasCXPlanoC = new ContasCXPlanoC();
+                        contasCXPlanoC.getId().setAno(anoAtual);
+                        contasCXPlanoC.getId().setFichaConta(ficha);
+                        contasCXPlanoC.setBanco(bancoCodigo);
+                        contasCXPlanoC.setAgencia(agenciaCodigo);
+                        contasCXPlanoC.setConta(conta);
+                        contasCXPlanoC.setFichaPC(13);
+                        contasCXPlanoC.setFichaPCAplic(18);
                         emLocal.persist(contasCXPlanoC);
                     }
                 }

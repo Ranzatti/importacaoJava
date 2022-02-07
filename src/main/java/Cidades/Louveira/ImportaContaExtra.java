@@ -51,10 +51,19 @@ public class ImportaContaExtra extends Util {
                 codigo = rs.getInt(1);
                 nome = rs.getString(2).trim().toUpperCase();
 
-                ContaExtra contaExtra = new ContaExtra(anoAtual, codigo, nome, 1, null, null);
+                ContaExtra contaExtra = new ContaExtra();
+                contaExtra.getId().setAno(anoAtual);
+                contaExtra.getId().setContaExtra(codigo);
+                contaExtra.setNome(nome);
+                contaExtra.setEmpresa(1);
                 emLocal.persist(contaExtra);
 
-                ContaExtraFonteRec contaExtraFonteRec = new ContaExtraFonteRec(anoAtual, codigo, 1, 1, null, BigDecimal.ZERO);
+                ContaExtraFonteRec contaExtraFonteRec = new ContaExtraFonteRec();
+                contaExtraFonteRec.getId().setAno(anoAtual);
+                contaExtraFonteRec.getId().setContaExtra(codigo);
+                contaExtraFonteRec.getId().setVersaoRecurso(1);
+                contaExtraFonteRec.getId().setFonteRecurso(1);
+                contaExtraFonteRec.setSaldo(BigDecimal.ZERO);
                 emLocal.persist(contaExtraFonteRec);
             }
             stmt.close();

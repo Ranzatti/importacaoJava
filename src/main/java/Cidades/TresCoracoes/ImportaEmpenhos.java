@@ -83,13 +83,36 @@ public class ImportaEmpenhos extends Util {
 
                 System.out.println("Ano: " + anoSonner + " - Empenho: " + empenho);
 
-                Empenhos empenhos = new Empenhos(anoAtual, empenho, tipoEmpenho, ficha, dataEmpenho, fornecedor, desdobramento, classeDespesa, valorEmpenho);
+                Empenhos empenhos = new Empenhos();
+                empenhos.getId().setAno(anoAtual);
+                empenhos.getId().setEmpenho(empenho);
+                empenhos.setTipo(tipoEmpenho);
+                empenhos.setFicha(ficha);
+                empenhos.setDataEmpenho(dataEmpenho);
+                empenhos.setFornecedor(fornecedor);
+                empenhos.setDesdobramento(desdobramento);
+                empenhos.setClasseDespesa(classeDespesa);
+                empenhos.setValorEmpenho(valorEmpenho);
                 emLocal.persist(empenhos);
 
-                EmpFonteRecurso empFonteRecurso = new EmpFonteRecurso(anoAtual, empenho, versaoRecurso, fonteRecurso, 999, 0, valorEmpenho);
+                EmpFonteRecurso empFonteRecurso = new EmpFonteRecurso();
+                empFonteRecurso.getId().setAno(anoAtual);
+                empFonteRecurso.getId().setEmpenho(empenho);
+                empFonteRecurso.setVersaoRecurso(versaoRecurso);
+                empFonteRecurso.setFonteRecurso(fonteRecurso);
+                empFonteRecurso.setCaFixo(999);
+                empFonteRecurso.setCaVariavel(0);
+                empFonteRecurso.setValor(valorEmpenho);
                 emLocal.persist(empFonteRecurso);
 
-                ItensEmpenho itensEmpenho = new ItensEmpenho(anoAtual, empenho, historico, valorEmpenho);
+                ItensEmpenho itensEmpenho = new ItensEmpenho();
+                itensEmpenho.getId().setAno(anoAtual);
+                itensEmpenho.getId().setEmpenho(empenho);
+                itensEmpenho.setDescricao(historico);
+                itensEmpenho.setItem(1);
+                itensEmpenho.setTipo("P");
+                itensEmpenho.setValorUnitario(valorEmpenho);
+                itensEmpenho.setValorTotal(valorEmpenho);
                 emLocal.persist(itensEmpenho);
             }
             stmt.close();
@@ -114,9 +137,14 @@ public class ImportaEmpenhos extends Util {
 
                 complemento = getMaxEmpComplementar(emLocal, anoAtual, empenho);
 
-                EmpenhoComplemento empenhoComplemento = new EmpenhoComplemento(anoAtual, empenho, complemento, dataEmpenho, historico, valorEmpenho);
+                EmpenhoComplemento empenhoComplemento = new EmpenhoComplemento();
+                empenhoComplemento.getId().setAno(anoAtual);
+                empenhoComplemento.getId().setEmpenho(empenho);
+                empenhoComplemento.getId().setComplemento(complemento);
+                empenhoComplemento.setData(dataEmpenho);
+                empenhoComplemento.setDescricao(historico);
+                empenhoComplemento.setValor(valorEmpenho);
                 emLocal.persist(empenhoComplemento);
-
             }
             stmt.close();
             rs.close();

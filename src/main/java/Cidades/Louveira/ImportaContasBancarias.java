@@ -46,7 +46,9 @@ public class ImportaContasBancarias extends Util {
                 bancoCodigo = rs.getInt(1);
                 nome = rs.getString(2).trim().toUpperCase();
 
-                Banco banco = new Banco(bancoCodigo, nome);
+                Banco banco = new Banco();
+                banco.setCodigo(bancoCodigo);
+                banco.setNome(nome);
                 emLocal.persist(banco);
             }
             stmt.close();
@@ -64,7 +66,10 @@ public class ImportaContasBancarias extends Util {
                 agenciaCodigo = rs.getString(2);
                 nome = rs.getString(3).trim().toUpperCase();
 
-                Agencia agencia = new Agencia(bancoCodigo, agenciaCodigo, nome);
+                Agencia agencia = new Agencia();
+                agencia.getId().setBanco(bancoCodigo);
+                agencia.getId().setCodigo(agenciaCodigo);
+                agencia.setNome(nome);
                 emLocal.persist(agencia);
             }
             stmt.close();
@@ -113,14 +118,37 @@ public class ImportaContasBancarias extends Util {
                 ContasBancarias contas = emLocal.find(ContasBancarias.class, ficha);
 
                 if (Objects.isNull(contas)) {
-                    ContasBancarias contasBancarias = new ContasBancarias(ficha, bancoCodigo, agenciaCodigo, conta, dv, nome, tipo, "Prefeitura Municipal de Cidades.Louveira",
-                            bancoCodigo, agenciaCodigo, conta, empresa, encerramento, abertura);
+                    ContasBancarias contasBancarias = new ContasBancarias();
+                    contasBancarias.setFicha(ficha);
+                    contasBancarias.setBanco(bancoCodigo);
+                    contasBancarias.setAgencia(agenciaCodigo);
+                    contasBancarias.setCodigo(conta);
+                    contasBancarias.setDv(dv);
+                    contasBancarias.setNome(nome);
+                    contasBancarias.setTipoConta(tipo);
+                    contasBancarias.setTitular("Prefeitura Municipal de Louveira");
+                    contasBancarias.setBancoAudesp(bancoCodigo);
+                    contasBancarias.setAgenciaAudesp(agenciaCodigo);
+                    contasBancarias.setContaAudesp(conta);
+                    contasBancarias.setEmpresa(empresa);
+                    contasBancarias.setEncerramento(encerramento);
+                    contasBancarias.setAbertura(abertura);
                     emLocal.persist(contasBancarias);
 
-                    ContasFonteRecurso contasFonteRecurso = new ContasFonteRecurso(ficha, 1, fonteRecurso, BigDecimal.ZERO);
+                    ContasFonteRecurso contasFonteRecurso = new ContasFonteRecurso();
+                    contasFonteRecurso.getId().setFicha(ficha);
+                    contasFonteRecurso.getId().setVersaoRecurso(1);
+                    contasFonteRecurso.getId().setFonteRecurso(fonteRecurso);
+                    contasFonteRecurso.setSaldoInicial(BigDecimal.ZERO);
                     emLocal.persist(contasFonteRecurso);
 
-                    ContasCA contasCA = new ContasCA(ficha, 1, fonteRecurso, caFixo, caVariavel, BigDecimal.ZERO);
+                    ContasCA contasCA = new ContasCA();
+                    contasCA.getId().setFicha(ficha);
+                    contasCA.getId().setVersaoRecurso(1);
+                    contasCA.getId().setFonteRecurso(fonteRecurso);
+                    contasCA.getId().setCaFixo(caFixo);
+                    contasCA.getId().setCaVariavel(caVariavel);
+                    contasCA.setSaldoInicial(BigDecimal.ZERO);
                     emLocal.persist(contasCA);
                 }
             }

@@ -56,7 +56,15 @@ public class ImportaReceita extends Util {
                 nomeReceita = rs.getString(2).trim().toUpperCase();
                 tipoConta = rs.getInt(3) == 0 ? "S" : "A";
 
-                TabReceitas tabReceitas = new TabReceitas(anoAtual, receita, tipoConta, nomeReceita, null, "S", BigDecimal.ZERO, 0, 0);
+                TabReceitas tabReceitas = new TabReceitas();
+                tabReceitas.getId().setAno(anoAtual);
+                tabReceitas.getId().setReceita(receita);
+                tabReceitas.setTipoConta(tipoConta);
+                tabReceitas.setNome(nomeReceita);
+                tabReceitas.setOrigemNaLei("S");
+                tabReceitas.setPercentual(BigDecimal.ZERO);
+                tabReceitas.setRecDividaAtiva(0);
+                tabReceitas.setDeducao(0);
                 emLocal.persist(tabReceitas);
 
             }
@@ -82,13 +90,31 @@ public class ImportaReceita extends Util {
                 caFixo = Integer.parseInt(codAplicacao.substring(0, 3));
                 caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
 
-                Receitas receitas = new Receitas(anoAtual, empresa, ficha, receita, false, orcado);
+                Receitas receitas = new Receitas();
+                receitas.getId().setAno(anoAtual);
+                receitas.getId().setFicha(ficha);
+                receitas.setReceita(receita);
+                receitas.setArrecadaProporc(false);
+                receitas.setEmpresa(empresa);
+                receitas.setOrcado(orcado);
                 emLocal.persist(receitas);
 
-                ReceitaFonteRecurso receitaFonteRecurso = new ReceitaFonteRecurso(anoAtual, ficha, 1, fonteRecurso, null, orcado);
+                ReceitaFonteRecurso receitaFonteRecurso = new ReceitaFonteRecurso();
+                receitaFonteRecurso.getId().setAno(anoAtual);
+                receitaFonteRecurso.getId().setFichaReceita(ficha);
+                receitaFonteRecurso.getId().setVersaoRecurso(1);
+                receitaFonteRecurso.getId().setFonteRecurso(fonteRecurso);
+                receitaFonteRecurso.setOrcado(orcado);
                 emLocal.persist(receitaFonteRecurso);
 
-                ReceitasCA receitasCA = new ReceitasCA(anoAtual, ficha, 1, fonteRecurso, caFixo, caVariavel, orcado);
+                ReceitasCA receitasCA = new ReceitasCA();
+                receitasCA.getId().setAno(anoAtual);
+                receitasCA.getId().setFicha(ficha);
+                receitasCA.getId().setVersaoRecurso(1);
+                receitasCA.getId().setFonteRecurso(fonteRecurso);
+                receitasCA.getId().setCaFixo(caFixo);
+                receitasCA.getId().setCaVariavel(caVariavel);
+                receitasCA.setOrcado(orcado);
                 emLocal.persist(receitasCA);
 
                 subTotal = BigDecimal.ZERO;
@@ -100,7 +126,15 @@ public class ImportaReceita extends Util {
                         subTotal = subTotal.add(valor);
                     }
 
-                    ReceitaMensal receitaMensal = new ReceitaMensal(anoAtual, ficha, 1, fonteRecurso, caFixo, caVariavel, mes, valor);
+                    ReceitaMensal receitaMensal = new ReceitaMensal();
+                    receitaMensal.getId().setAno(anoAtual);
+                    receitaMensal.getId().setFicha(ficha);
+                    receitaMensal.getId().setVersaoRecurso(1);
+                    receitaMensal.getId().setFonteRecurso(fonteRecurso);
+                    receitaMensal.getId().setCaFixo(caFixo);
+                    receitaMensal.getId().setCaVariavel(caVariavel);
+                    receitaMensal.getId().setMes(mes);
+                    receitaMensal.setOrcado(valor);
                     emLocal.persist(receitaMensal);
                 }
             }

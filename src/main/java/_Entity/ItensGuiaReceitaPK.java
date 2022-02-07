@@ -22,12 +22,11 @@ public class ItensGuiaReceitaPK implements Serializable {
     private Integer fonteRecurso;
     private Integer caFixo;
     private Integer caVariavel;
-    private String receita;
 
     public ItensGuiaReceitaPK() {
     }
 
-    public ItensGuiaReceitaPK(Date ano, String tipo, Integer guia, Integer ficha, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, String receita) {
+    public ItensGuiaReceitaPK(Date ano, String tipo, Integer guia, Integer ficha, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel) {
         this.ano = ano;
         this.tipo = tipo;
         this.guia = guia;
@@ -36,7 +35,6 @@ public class ItensGuiaReceitaPK implements Serializable {
         this.fonteRecurso = fonteRecurso;
         this.caFixo = caFixo;
         this.caVariavel = caVariavel;
-        this.receita = receita;
     }
 
     public Date getAno() {
@@ -101,13 +99,5 @@ public class ItensGuiaReceitaPK implements Serializable {
 
     public void setCaVariavel(Integer caVariavel) {
         this.caVariavel = caVariavel;
-    }
-
-    public String getReceita() {
-        return receita;
-    }
-
-    public void setReceita(String receita) {
-        this.receita = receita;
     }
 }

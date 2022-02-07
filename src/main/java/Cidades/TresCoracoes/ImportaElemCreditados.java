@@ -5,7 +5,6 @@ import _Infra.Util;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -82,8 +81,18 @@ public class ImportaElemCreditados extends Util {
                 System.out.println("Codigo: " + codigo);
 
                 CreditoDotacao creditoDotacao = emLocal.find(CreditoDotacao.class, new CreditoDotacaoPK(anoAtual, codigo));
-                if(Objects.isNull(creditoDotacao)) {
-                    creditoDotacao = new CreditoDotacao(anoAtual, codigo, data, "S", "Crédito Suplementar", "A", null, lei, dataLei, 0, 0);
+                if (Objects.isNull(creditoDotacao)) {
+                    creditoDotacao = new CreditoDotacao();
+                    creditoDotacao.getId().setAno(anoAtual);
+                    creditoDotacao.getId().setCodigo(codigo);
+                    creditoDotacao.setDataCredito(data);
+                    creditoDotacao.setTipo("S");
+                    creditoDotacao.setHistorico("Crédito Suplementar");
+                    creditoDotacao.setNatureza("A");
+                    creditoDotacao.setLei(lei);
+                    creditoDotacao.setDataLei(dataLei);
+                    creditoDotacao.setTransposicao(0);
+                    creditoDotacao.setTransposicaoFonte(0);
                     emLocal.persist(creditoDotacao);
                 }
 
@@ -108,10 +117,27 @@ public class ImportaElemCreditados extends Util {
                     fonteRecursoCredito = rs2.getInt(2);
                     valor = rs2.getBigDecimal(3);
 
-                    ElemCreditados elemCreditados = new ElemCreditados(anoAtual, codigo, fichaCredito, versaoRecurso, fonteRecursoCredito, 999, 0, valor);
+                    ElemCreditados elemCreditados = new ElemCreditados();
+                    elemCreditados.getId().setAno(anoAtual);
+                    elemCreditados.getId().setCodigo(codigo);
+                    elemCreditados.getId().setFicha(fichaCredito);
+                    elemCreditados.getId().setVersaoRecurso(versaoRecurso);
+                    elemCreditados.getId().setFonteRecurso(fonteRecursoCredito);
+                    elemCreditados.getId().setCaFixo(999);
+                    elemCreditados.getId().setCaVariavel(0);
+                    elemCreditados.setValor(valor);
                     emLocal.persist(elemCreditados);
 
-                    ElemCredMes elemCredMes = new ElemCredMes(anoAtual, codigo, fichaCredito, versaoRecurso, fonteRecursoCredito, 999, 0, mes, valor);
+                    ElemCredMes elemCredMes = new ElemCredMes();
+                    elemCredMes.getId().setAno(anoAtual);
+                    elemCredMes.getId().setCodigo(codigo);
+                    elemCredMes.getId().setFicha(fichaCredito);
+                    elemCredMes.getId().setVersaoRecurso(versaoRecurso);
+                    elemCredMes.getId().setFonteRecurso(fonteRecursoCredito);
+                    elemCredMes.getId().setCaFixo(999);
+                    elemCredMes.getId().setCaVariavel(0);
+                    elemCredMes.getId().setMes(mes);
+                    elemCredMes.setValor(valor);
                     emLocal.persist(elemCredMes);
                 }
                 stmt2.close();
@@ -139,10 +165,28 @@ public class ImportaElemCreditados extends Util {
                     fonteRecursoAnulada = rs2.getInt(2);
                     valor = rs2.getBigDecimal(3);
 
-                    ElemAnulados elemAnulados = new ElemAnulados(anoAtual, codigo, fichaAnulada, versaoRecurso, fonteRecursoAnulada, 999, 0, valor);
+                    ElemAnulados elemAnulados = new ElemAnulados();
+                    elemAnulados.getId().setAno(anoAtual);
+                    elemAnulados.getId().setCodigo(codigo);
+                    elemAnulados.getId().setFicha(fichaAnulada);
+                    elemAnulados.getId().setVersaoRecurso(versaoRecurso);
+                    elemAnulados.getId().setFonteRecurso(fonteRecursoAnulada);
+                    elemAnulados.getId().setCaFixo(999);
+                    elemAnulados.getId().setCaVariavel(0);
+                    elemAnulados.getId().setCaVariavel(0);
+                    elemAnulados.setValor(valor);
                     emLocal.persist(elemAnulados);
 
-                    ElemAnulMes elemAnulMes = new ElemAnulMes(anoAtual, codigo, fichaAnulada, versaoRecurso, fonteRecursoAnulada, 999, 0, mes, valor);
+                    ElemAnulMes elemAnulMes = new ElemAnulMes();
+                    elemAnulMes.getId().setAno(anoAtual);
+                    elemAnulMes.getId().setCodigo(codigo);
+                    elemAnulMes.getId().setFicha(fichaAnulada);
+                    elemAnulMes.getId().setVersaoRecurso(versaoRecurso);
+                    elemAnulMes.getId().setFonteRecurso(fonteRecursoAnulada);
+                    elemAnulMes.getId().setCaFixo(999);
+                    elemAnulMes.getId().setCaVariavel(0);
+                    elemAnulMes.getId().setMes(mes);
+                    elemAnulMes.setValor(valor);
                     emLocal.persist(elemAnulMes);
                 }
                 stmt2.close();
@@ -161,7 +205,7 @@ public class ImportaElemCreditados extends Util {
                                 "WHERE " +
                                 "    ANO_CREDITO_ADICIONAL = ? " +
                                 "AND SEQ_CT_UNIDADE_GESTORA = 21 " +
-                                "AND NRO_CREDITO_ADICIONAL = ? " );
+                                "AND NRO_CREDITO_ADICIONAL = ? ");
                 stmt2.setInt(1, anoSonner);
                 stmt2.setInt(2, codigo);
                 rs2 = stmt2.executeQuery();
@@ -172,9 +216,20 @@ public class ImportaElemCreditados extends Util {
                     fonteRecursoAnulada = rs2.getInt(4);
                     valor = rs2.getBigDecimal(5);
 
-                    ElemCredDistrib elemCredDistrib = new ElemCredDistrib(anoAtual, codigo,
-                            fichaCredito, versaoRecurso, fonteRecursoCredito, 999, 0,
-                            fichaAnulada, versaoRecurso, fonteRecursoAnulada, 999, 0, valor);
+                    ElemCredDistrib elemCredDistrib = new ElemCredDistrib();
+                    elemCredDistrib.getId().setAno(anoAtual);
+                    elemCredDistrib.getId().setCodigo(codigo);
+                    elemCredDistrib.getId().setFichaCredito(fichaCredito);
+                    elemCredDistrib.getId().setVersaoRecCredito(versaoRecurso);
+                    elemCredDistrib.getId().setFonteRecursoCredito(fonteRecursoCredito);
+                    elemCredDistrib.getId().setCaFixoCredito(999);
+                    elemCredDistrib.getId().setCaVariavelCredito(0);
+                    elemCredDistrib.getId().setFichaAnulacao(fichaAnulada);
+                    elemCredDistrib.getId().setVersaoRecAnulacao(versaoRecurso);
+                    elemCredDistrib.getId().setFonteRecursoAnulacao(fonteRecursoAnulada);
+                    elemCredDistrib.getId().setCaFixoAnulacao(999);
+                    elemCredDistrib.getId().setCaVariavelAnulacao(0);
+                    elemCredDistrib.setValor(valor);
                     emLocal.persist(elemCredDistrib);
                 }
                 stmt2.close();

@@ -68,7 +68,14 @@ public class ImportaAnulacaoLiquidacao extends Util {
 
                 anulacao = getMaxAnulacao(emLocal, anoAtual, empenho, liquidacao);
 
-                AnulacaoLiquida anulacaoLiquida = new AnulacaoLiquida(anoAtual, empenho, liquidacao, anulacao, data, valor, historico);
+                AnulacaoLiquida anulacaoLiquida = new AnulacaoLiquida();
+                anulacaoLiquida.getId().setAno(anoAtual);
+                anulacaoLiquida.getId().setEmpenho(empenho);
+                anulacaoLiquida.getId().setLiquidacao(liquidacao);
+                anulacaoLiquida.getId().setAnulacao(anulacao);
+                anulacaoLiquida.setData(data);
+                anulacaoLiquida.setHistorico(historico);
+                anulacaoLiquida.setValor(valor);
                 emLocal.persist(anulacaoLiquida);
             }
             stmt.close();

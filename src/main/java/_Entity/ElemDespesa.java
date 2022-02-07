@@ -34,7 +34,7 @@ public class ElemDespesa implements Serializable {
         this.id = new ElemDespesaPK();
     }
 
-    public ElemDespesa(Date ano, Integer empresa, Integer ficha, String orgao, String unidade, String subUnidade, String funcao, String subFuncao, String programa, String projAtiv, String categoria,
+    public ElemDespesa(Date ano, Integer ficha, Integer empresa, String orgao, String unidade, String subUnidade, String funcao, String subFuncao, String programa, String projAtiv, String categoria,
                        String grupo, String modalidade, String elemento, String desdobramento, BigDecimal orcado, BigDecimal ordinario, BigDecimal vinculado) {
         this.id = new ElemDespesaPK(ano, ficha);
         this.empresa = empresa;

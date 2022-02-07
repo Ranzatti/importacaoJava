@@ -118,7 +118,6 @@ public class ImportaTransferenciaBancaria extends Util {
                 debito.setCaVariavel(0);
                 emLocal.persist(debito);
 
-
                 // Contra Partida
                 fichaDebito = getFichaConta(con, seqContaDebito);
 
@@ -142,7 +141,6 @@ public class ImportaTransferenciaBancaria extends Util {
                 deposito.setCaFixo(999);
                 deposito.setCaVariavel(0);
                 emLocal.persist(deposito);
-
             }
             stmt.close();
             rs.close();

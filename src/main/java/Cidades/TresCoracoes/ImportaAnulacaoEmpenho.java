@@ -38,16 +38,22 @@ public class ImportaAnulacaoEmpenho extends Util {
         emLocal.getTransaction().begin();
 
         teste = "";
-        //teste = "and A.RAP_EMN_EXE = 2021";
+        //teste = "and NRO_EMPENHO_ANULADO = 1 ";
 
         System.out.println("INICIANDO IMPORTAÇÃO ANULAÇÂO EMPENHOS: " + anoSonner);
         try {
             stmt = con.prepareStatement(
-                    "SELECT NRO_EMPENHO_ANULADO, DAT_EMPENHO_ANULADO, HST_EMPENHO_ANULADO, VLR_EMPENHO_ANULADO " +
-                            "FROM DBO.CT_EMPENHO_ANULADO " +
-                            "WHERE ANO_EMPENHO_ANULADO = ? " +
-                            "and SEQ_CT_UNIDADE_GESTORA = 21" +
-                            "order by 1 ");
+                    "SELECT " +
+                            "    NRO_EMPENHO_ANULADO, " +
+                            "    DAT_EMPENHO_ANULADO, " +
+                            "    HST_EMPENHO_ANULADO, " +
+                            "    VLR_EMPENHO_ANULADO " +
+                            "FROM " +
+                            "    DBO.CT_EMPENHO_ANULADO " +
+                            "WHERE " +
+                            "    ANO_EMPENHO_ANULADO = ? " +
+                            "AND SEQ_CT_UNIDADE_GESTORA = 21 " + teste +
+                            "ORDER BY 1 ");
             stmt.setInt(1, anoSonner);
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -60,7 +66,13 @@ public class ImportaAnulacaoEmpenho extends Util {
 
                 anulacao = getMaxAnulacao(emLocal, anoAtual, empenho);
 
-                AnulacaoEmpenho anulacaoEmpenho = new AnulacaoEmpenho(anoAtual, empenho, anulacao, data, valor, historico);
+                AnulacaoEmpenho anulacaoEmpenho = new AnulacaoEmpenho();
+                anulacaoEmpenho.getId().setAno(anoAtual);
+                anulacaoEmpenho.getId().setEmpenho(empenho);
+                anulacaoEmpenho.getId().setAnulacao(anulacao);
+                anulacaoEmpenho.setDataAnulacao(data);
+                anulacaoEmpenho.setHistorico(historico);
+                anulacaoEmpenho.setValorAnulacao(valor);
                 emLocal.persist(anulacaoEmpenho);
             }
             stmt.close();

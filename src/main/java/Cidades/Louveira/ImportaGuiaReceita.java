@@ -70,7 +70,16 @@ public class ImportaGuiaReceita extends Util {
 
                     System.out.println("Guia: " + numero);
 
-                    GuiaReceita guiaReceita = new GuiaReceita(anoAtual, tipoReceita, numero, 1, dataGuia, dataGuia, dataGuia, "Importação de Guia de Receita", "DIG", null);
+                    GuiaReceita guiaReceita = new GuiaReceita();
+                    guiaReceita.getId().setAno(anoAtual);
+                    guiaReceita.getId().setTipo(tipoReceita);
+                    guiaReceita.getId().setNumero(numero);
+                    guiaReceita.setContribuinte(1);
+                    guiaReceita.setDataGuia(dataGuia);
+                    guiaReceita.setVencimento(dataGuia);
+                    guiaReceita.setRecebimento(dataGuia);
+                    guiaReceita.setHistorico("Importação de Guia de Receita");
+                    guiaReceita.setOrigem("DIG");
                     emLocal.persist(guiaReceita);
 
                     // Itens da Guia
@@ -97,7 +106,17 @@ public class ImportaGuiaReceita extends Util {
                         caFixo = Integer.parseInt(codAplicacao.substring(0, 3));
                         caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
 
-                        ItensGuiaReceita itensGuiaReceita = new ItensGuiaReceita(anoAtual, tipoReceita, numero, fichaReceita, 1, fonteRecurso, caFixo, caVariavel, receita, valor);
+                        ItensGuiaReceita itensGuiaReceita = new ItensGuiaReceita();
+                        itensGuiaReceita.getId().setAno(anoAtual);
+                        itensGuiaReceita.getId().setTipo(tipoReceita);
+                        itensGuiaReceita.getId().setGuia(numero);
+                        itensGuiaReceita.getId().setFicha(fichaReceita);
+                        itensGuiaReceita.getId().setVersaoRecurso(1);
+                        itensGuiaReceita.getId().setFonteRecurso(fonteRecurso);
+                        itensGuiaReceita.getId().setCaFixo(caFixo);
+                        itensGuiaReceita.getId().setCaVariavel(caVariavel);
+                        itensGuiaReceita.setReceita(receita);
+                        itensGuiaReceita.setValor(valor);
                         emLocal.persist(itensGuiaReceita);
                     }
                     stmt3.close();
@@ -150,7 +169,22 @@ public class ImportaGuiaReceita extends Util {
                             financeiro(emLocal, "C", anoAtual, tipoReceita, numero, fichaBanco, dataGuia, 1, fonteRecurso, caFixo, caVariavel, valor);
                         }
 
-                        RecContaBanco recContaBanco = new RecContaBanco(anoAtual, tipoReceita, numero, fichaReceita, 1, fonteRecurso, caFixo, caVariavel, fichaBanco, 1, fonteRecurso, caFixo, caVariavel, i, valor);
+                        RecContaBanco recContaBanco = new RecContaBanco();
+                        recContaBanco.getId().setAno(anoAtual);
+                        recContaBanco.getId().setTipo(tipoReceita);
+                        recContaBanco.getId().setGuia(numero);
+                        recContaBanco.getId().setFichaReceita(fichaReceita);
+                        recContaBanco.getId().setVersaoRecurso(1);
+                        recContaBanco.getId().setFonteRecurso(fonteRecurso);
+                        recContaBanco.getId().setCaFixo(caFixo);
+                        recContaBanco.getId().setCaVariavel(caVariavel);
+                        recContaBanco.getId().setFichaBanco(fichaBanco);
+                        recContaBanco.getId().setVersaoRecursoBanco(1);
+                        recContaBanco.getId().setFonteRecursoBanco(fonteRecurso);
+                        recContaBanco.getId().setCaFixoBanco(caFixo);
+                        recContaBanco.getId().setCaVariavelBanco(caVariavel);
+                        recContaBanco.getId().setItem(i);
+                        recContaBanco.setValor(valor);
                         emLocal.persist(recContaBanco);
 
                         i++;
@@ -171,7 +205,13 @@ public class ImportaGuiaReceita extends Util {
 
                     numero = getMaxAnulacaoReceita(emLocal, anoAtual, tipoReceita);
 
-                    AnulaReceita anulaReceita = new AnulaReceita(anoAtual, tipoReceita, numero, dataGuia, "IMPORTAÇÃO DE ANULAÇÃO DE RECEITA DEDUTORA", 2);
+                    AnulaReceita anulaReceita = new AnulaReceita();
+                    anulaReceita.getId().setAno(anoAtual);
+                    anulaReceita.getId().setTipo(tipoReceita);
+                    anulaReceita.getId().setAnulacao(numero);
+                    anulaReceita.setDataAnulacao(dataGuia);
+                    anulaReceita.setHistorico("IMPORTAÇÃO DE ANULAÇÃO DE RECEITA DEDUTORA");
+                    anulaReceita.setDedutora(2);
                     emLocal.persist(anulaReceita);
 
                     // Itens da Anulacao
@@ -197,7 +237,16 @@ public class ImportaGuiaReceita extends Util {
                         caFixo = Integer.parseInt(codAplicacao.substring(0, 3));
                         caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
 
-                        AnulaRecItens anulaRecItens = new AnulaRecItens(anoAtual, tipoReceita, numero, fichaReceita, 1, fonteRecurso, caFixo, caVariavel, valor);
+                        AnulaRecItens anulaRecItens = new AnulaRecItens();
+                        anulaRecItens.getId().setAno(anoAtual);
+                        anulaRecItens.getId().setTipo(tipoReceita);
+                        anulaRecItens.getId().setAnulacao(numero);
+                        anulaRecItens.getId().setFicha(fichaReceita);
+                        anulaRecItens.getId().setVersaoRecurso(1);
+                        anulaRecItens.getId().setFonteRecurso(fonteRecurso);
+                        anulaRecItens.getId().setCaFixo(caFixo);
+                        anulaRecItens.getId().setCaVariavel(caVariavel);
+                        anulaRecItens.setValor(valor);
                         emLocal.persist(anulaRecItens);
                     }
                     stmt3.close();
@@ -233,10 +282,22 @@ public class ImportaGuiaReceita extends Util {
                         financeiro(emLocal, "D", anoAtual, tipoReceita, numero, fichaBanco, dataGuia, 1, fonteRecurso, caFixo, caVariavel, valor);
 
                         // Rec Conta banco
-                        AnulaRecContaBanco anulaRecContaBanco = new AnulaRecContaBanco(
-                                anoAtual, tipoReceita, numero,
-                                fichaReceita, 1, fonteRecurso, caFixo, caVariavel,
-                                fichaBanco, 1, fonteRecurso, caFixo, caVariavel, i, valor);
+                        AnulaRecContaBanco anulaRecContaBanco = new AnulaRecContaBanco();
+                        anulaRecContaBanco.getId().setAno(anoAtual);
+                        anulaRecContaBanco.getId().setTipo(tipoReceita);
+                        anulaRecContaBanco.getId().setAnulacao(numero);
+                        anulaRecContaBanco.getId().setFichaReceita(fichaReceita);
+                        anulaRecContaBanco.getId().setVersaoRecurso(1);
+                        anulaRecContaBanco.getId().setFonteRecurso(fonteRecurso);
+                        anulaRecContaBanco.getId().setCaFixo(caFixo);
+                        anulaRecContaBanco.getId().setCaVariavel(caVariavel);
+                        anulaRecContaBanco.getId().setFichaBanco(fichaBanco);
+                        anulaRecContaBanco.getId().setVersaoRecursoBanco(1);
+                        anulaRecContaBanco.getId().setFonteRecursoBanco(fonteRecurso);
+                        anulaRecContaBanco.getId().setCaFixoBanco(caFixo);
+                        anulaRecContaBanco.getId().setCaVariavelBanco(caVariavel);
+                        anulaRecContaBanco.getId().setItem(i);
+                        anulaRecContaBanco.setValor(valor);
                         emLocal.persist(anulaRecContaBanco);
 
                         i++;

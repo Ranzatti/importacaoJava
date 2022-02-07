@@ -97,13 +97,35 @@ public class ImportaEmpenhos extends Util {
 
                 System.out.println("Ano: " + anoSonner + " - Empenho: " + empenho);
 
-                Empenhos empenhos = new Empenhos(anoAtual, empenho, tipoEmpenho, ficha, dataEmpenho, fornecedor, desdobramento, 0, valorEmpenho);
+                Empenhos empenhos = new Empenhos();
+                empenhos.getId().setAno(anoAtual);
+                empenhos.getId().setEmpenho(empenho);
+                empenhos.setTipo(tipoEmpenho);
+                empenhos.setFicha(ficha);
+                empenhos.setDataEmpenho(dataEmpenho);
+                empenhos.setFornecedor(fornecedor);
+                empenhos.setDesdobramento(desdobramento);
+                empenhos.setValorEmpenho(valorEmpenho);
                 emLocal.persist(empenhos);
 
-                EmpFonteRecurso empFonteRecurso = new EmpFonteRecurso(anoAtual, empenho, 1, fonteRecurso, caFixo, caVariavel, valorEmpenho);
+                EmpFonteRecurso empFonteRecurso = new EmpFonteRecurso();
+                empFonteRecurso.getId().setAno(anoAtual);
+                empFonteRecurso.getId().setEmpenho(empenho);
+                empFonteRecurso.setVersaoRecurso(1);
+                empFonteRecurso.setFonteRecurso(fonteRecurso);
+                empFonteRecurso.setCaFixo(caFixo);
+                empFonteRecurso.setCaVariavel(caVariavel);
+                empFonteRecurso.setValor(valorEmpenho);
                 emLocal.persist(empFonteRecurso);
 
-                ItensEmpenho itensEmpenho = new ItensEmpenho(anoAtual, empenho, descricao, valorEmpenho);
+                ItensEmpenho itensEmpenho = new ItensEmpenho();
+                itensEmpenho.getId().setAno(anoAtual);
+                itensEmpenho.getId().setEmpenho(empenho);
+                itensEmpenho.setDescricao(descricao);
+                itensEmpenho.setItem(1);
+                itensEmpenho.setTipo("P");
+                itensEmpenho.setValorUnitario(valorEmpenho);
+                itensEmpenho.setValorTotal(valorEmpenho);
                 emLocal.persist(itensEmpenho);
             }
             stmt.close();

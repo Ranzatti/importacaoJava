@@ -90,7 +90,7 @@ public class ImportaElemDespesa extends Util {
 
                 ElemDespesa elemDespesa = emLocal.find(ElemDespesa.class, new ElemDespesaPK(anoAtual, ficha));
 
-                if(Objects.isNull(elemDespesa)) {
+                if (Objects.isNull(elemDespesa)) {
                     unidade = unidade.substring(unidade.length() - 2);
                     funcao = funcao.substring(funcao.length() - 2);
                     subFuncao = subFuncao.substring(subFuncao.length() - 3);
@@ -103,23 +103,51 @@ public class ImportaElemDespesa extends Util {
 
                     ordinario = BigDecimal.ZERO;
                     vinculado = BigDecimal.ZERO;
-                    if(ordinario_vinculado.equals("O")){
+                    if (ordinario_vinculado.equals("O")) {
                         ordinario = orcado;
                     } else {
                         vinculado = orcado;
                     }
 
                     // Elem despesa
-                    elemDespesa = new ElemDespesa(anoAtual, 5, ficha, orgao, unidade, null, funcao, subFuncao, programa, projAtiv, categoria, grupo, modalidade, elemento, "00", orcado, ordinario, vinculado);
+                    elemDespesa = new ElemDespesa();
+                    elemDespesa.getId().setAno(anoAtual);
+                    elemDespesa.getId().setFicha(ficha);
+                    elemDespesa.setEmpresa(5);
+                    elemDespesa.setOrgao(orgao);
+                    elemDespesa.setUnidade(unidade);
+                    elemDespesa.setFuncao(funcao);
+                    elemDespesa.setSubFuncao(subFuncao);
+                    elemDespesa.setPrograma(programa);
+                    elemDespesa.setProjAtiv(projAtiv);
+                    elemDespesa.setCategoria(categoria);
+                    elemDespesa.setGrupo(grupo);
+                    elemDespesa.setModalidade(modalidade);
+                    elemDespesa.setDesdobramento("00");
+                    elemDespesa.setOrdinario(ordinario);
+                    elemDespesa.setVinculado(vinculado);
+                    elemDespesa.setOrcado(orcado);
                     emLocal.persist(elemDespesa);
                 }
 
                 // Fonte Recurso
-                ElemDespRecurso elemDespRecurso = new ElemDespRecurso(anoAtual, ficha, versaoRecurso, fonteRecurso, orcadoFonteRecurso);
+                ElemDespRecurso elemDespRecurso = new ElemDespRecurso();
+                elemDespRecurso.getId().setAno(anoAtual);
+                elemDespRecurso.getId().setFicha(ficha);
+                elemDespRecurso.getId().setVersaoRecurso(versaoRecurso);
+                elemDespRecurso.getId().setFonteRecurso(fonteRecurso);
+                elemDespRecurso.setOrcado(orcadoFonteRecurso);
                 emLocal.persist(elemDespRecurso);
 
                 // Codigo Aplicacao
-                ElemDespCA elemDespCA = new ElemDespCA(anoAtual, ficha, versaoRecurso, fonteRecurso, 999, 0, orcadoFonteRecurso);
+                ElemDespCA elemDespCA = new ElemDespCA();
+                elemDespCA.getId().setAno(anoAtual);
+                elemDespCA.getId().setFicha(ficha);
+                elemDespCA.getId().setVersaoRecurso(versaoRecurso);
+                elemDespCA.getId().setFonteRecurso(fonteRecurso);
+                elemDespCA.getId().setCaFixo(999);
+                elemDespCA.getId().setCaVariavel(0);
+                elemDespCA.setOrcado(orcadoFonteRecurso);
                 emLocal.persist(elemDespCA);
 
                 //Distribuição Mensal

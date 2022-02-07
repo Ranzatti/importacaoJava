@@ -1,5 +1,6 @@
 package _Entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -13,29 +14,34 @@ public class RecContaBancoPK implements Serializable {
 	private Date ano;
 	private String tipo;
 	private Integer guia;
-	private Integer ficha;
+
+	@Column(name = "FICHA")
+	private Integer fichaReceita;
 	private Integer versaoRecurso;
-	private Integer recurso;
+
+	@Column(name = "RECURSO")
+	private Integer fonteRecurso;
 	private Integer caFixo;
 	private Integer caVariavel;
-	private Integer item;
 	private Integer fichaBanco;
 	private Integer versaoRecursoBanco;
 	private Integer fonteRecursoBanco;
 	private Integer caFixoBanco;
 	private Integer caVariavelBanco;
+	private Integer item;
 
 	public RecContaBancoPK() {
 	}
 
-	public RecContaBancoPK(Date ano, String tipo, Integer guia, Integer ficha, Integer versaoRecurso, Integer recurso, Integer caFixo, Integer caVariavel, Integer item, Integer fichaBanco, Integer versaoRecursoBanco, Integer fonteRecursoBanco, Integer caFixoBanco, Integer caVariavelBanco) {
+	public RecContaBancoPK(Date ano, String tipo, Integer guia, Integer fichaReceita, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, Integer item, Integer fichaBanco,
+						   Integer versaoRecursoBanco, Integer fonteRecursoBanco, Integer caFixoBanco, Integer caVariavelBanco) {
 		this.ano = ano;
 		this.tipo = tipo;
 		this.guia = guia;
 		this.fichaBanco = fichaBanco;
-		this.ficha = ficha;
+		this.fichaReceita = fichaReceita;
 		this.versaoRecurso = versaoRecurso;
-		this.recurso = recurso;
+		this.fonteRecurso = fonteRecurso;
 		this.caFixo = caFixo;
 		this.caVariavel = caVariavel;
 		this.item = item;
@@ -77,12 +83,12 @@ public class RecContaBancoPK implements Serializable {
 		this.fichaBanco = fichaBanco;
 	}
 
-	public Integer getFicha() {
-		return ficha;
+	public Integer getFichaReceita() {
+		return fichaReceita;
 	}
 
-	public void setFicha(Integer ficha) {
-		this.ficha = ficha;
+	public void setFichaReceita(Integer fichaReceita) {
+		this.fichaReceita = fichaReceita;
 	}
 
 	public Integer getVersaoRecurso() {
@@ -93,12 +99,12 @@ public class RecContaBancoPK implements Serializable {
 		this.versaoRecurso = versaoRecurso;
 	}
 
-	public Integer getRecurso() {
-		return recurso;
+	public Integer getFonteRecurso() {
+		return fonteRecurso;
 	}
 
-	public void setRecurso(Integer recurso) {
-		this.recurso = recurso;
+	public void setFonteRecurso(Integer fonteRecurso) {
+		this.fonteRecurso = fonteRecurso;
 	}
 
 	public Integer getCaFixo() {

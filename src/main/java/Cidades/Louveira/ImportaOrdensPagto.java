@@ -61,13 +61,31 @@ public class ImportaOrdensPagto extends Util {
 
                 System.out.println("Ano: " + anoSonner + " - OP: " + nroOP);
 
-                OrdensPagto ordensPagto = new OrdensPagto(anoAtual, nroOP, ficha, 0, data, historico, valorOP, data, BigDecimal.ZERO, null, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO);
+                OrdensPagto ordensPagto = new OrdensPagto();
+                ordensPagto.getId().setAno(anoAtual);
+                ordensPagto.getId().setNumero(nroOP);
+                ordensPagto.setFicha(ficha);
+                ordensPagto.setFornecedor(0);
+                ordensPagto.setData(data);
+                ordensPagto.setHistorico(historico);
+                ordensPagto.setValorOP(valorOP);
+                ordensPagto.setVencimento(data);
                 emLocal.persist(ordensPagto);
 
-                PagtoOP pagtoOP = new PagtoOP(anoAtual, nroOP, null, BigDecimal.ZERO);
+                PagtoOP pagtoOP = new PagtoOP();
+                pagtoOP.getId().setAno(anoAtual);
+                pagtoOP.getId().setNumero(nroOP);
+                pagtoOP.setValorPagto(BigDecimal.ZERO);
                 emLocal.persist(pagtoOP);
 
-                OPFonteRecurso opFonteRecurso = new OPFonteRecurso(anoAtual, nroOP, 1, 1, 110, 0, valorOP);
+                OPFonteRecurso opFonteRecurso = new OPFonteRecurso();
+                opFonteRecurso.getId().setAno(anoAtual);
+                opFonteRecurso.getId().setNumero(nroOP);
+                opFonteRecurso.setVersaoRecurso(1);
+                opFonteRecurso.setFonteRecurso(1);
+                opFonteRecurso.setCaFixo(110);
+                opFonteRecurso.setCaVariavel(0);
+                opFonteRecurso.setValor(valorOP);
                 emLocal.persist(opFonteRecurso);
             }
             stmt.close();

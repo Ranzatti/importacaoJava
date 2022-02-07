@@ -71,7 +71,13 @@ public class ImportaAnulacaoReceita extends Util {
 
                     anulacao = getMaxAnulacao(emLocal, anoAtual, tipoReceita);
 
-                    AnulaReceita anulaReceita = new AnulaReceita(anoAtual, tipoReceita, anulacao, dataGuia, "IMPORTAÇÃO DE ANULAÇÃO DE RECEITA", 0);
+                    AnulaReceita anulaReceita = new AnulaReceita();
+                    anulaReceita.getId().setAno(anoAtual);
+                    anulaReceita.getId().setTipo(tipoReceita);
+                    anulaReceita.getId().setAnulacao(anulacao);
+                    anulaReceita.setDataAnulacao(dataGuia);
+                    anulaReceita.setHistorico("IMPORTAÇÃO DE ANULAÇÃO DE RECEITA");
+                    anulaReceita.setDedutora(0);
                     emLocal.persist(anulaReceita);
 
                     // Itens da Anulacao
@@ -98,9 +104,17 @@ public class ImportaAnulacaoReceita extends Util {
                         caFixo = Integer.parseInt(codAplicacao.substring(0, 3));
                         caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
 
-                        AnulaRecItens anulaRecItens = new AnulaRecItens(anoAtual, tipoReceita, anulacao, fichaReceita, 1, fonteRecurso, caFixo, caVariavel, valor);
+                        AnulaRecItens anulaRecItens = new AnulaRecItens();
+                        anulaRecItens.getId().setAno(anoAtual);
+                        anulaRecItens.getId().setTipo(tipoReceita);
+                        anulaRecItens.getId().setAnulacao(anulacao);
+                        anulaRecItens.getId().setFicha(fichaReceita);
+                        anulaRecItens.getId().setVersaoRecurso(1);
+                        anulaRecItens.getId().setFonteRecurso(fonteRecurso);
+                        anulaRecItens.getId().setCaFixo(caFixo);
+                        anulaRecItens.getId().setCaVariavel(caVariavel);
+                        anulaRecItens.setValor(valor);
                         emLocal.persist(anulaRecItens);
-
                     }
                     stmt3.close();
                     rs3.close();
@@ -142,10 +156,22 @@ public class ImportaAnulacaoReceita extends Util {
                         financeiro(emLocal, tipoFinanceiro, anoAtual, tipoReceita, anulacao, fichaBanco, dataGuia, 1, fonteRecurso, caFixo, caVariavel, valor);
 
                         // Rec Conta banco
-                        AnulaRecContaBanco anulaRecContaBanco = new AnulaRecContaBanco(
-                                anoAtual, tipoReceita, anulacao,
-                                fichaReceita, 1, fonteRecurso, caFixo, caVariavel,
-                                fichaBanco, 1, fonteRecurso, caFixo, caVariavel, i, valor);
+                        AnulaRecContaBanco anulaRecContaBanco = new AnulaRecContaBanco();
+                        anulaRecContaBanco.getId().setAno(anoAtual);
+                        anulaRecContaBanco.getId().setTipo(tipoReceita);
+                        anulaRecContaBanco.getId().setAnulacao(anulacao);
+                        anulaRecContaBanco.getId().setFichaReceita(fichaReceita);
+                        anulaRecContaBanco.getId().setVersaoRecurso(1);
+                        anulaRecContaBanco.getId().setFonteRecurso(fonteRecurso);
+                        anulaRecContaBanco.getId().setCaFixo(caFixo);
+                        anulaRecContaBanco.getId().setCaVariavel(caVariavel);
+                        anulaRecContaBanco.getId().setFichaBanco(fichaBanco);
+                        anulaRecContaBanco.getId().setVersaoRecursoBanco(1);
+                        anulaRecContaBanco.getId().setFonteRecursoBanco(fonteRecurso);
+                        anulaRecContaBanco.getId().setCaFixoBanco(caFixo);
+                        anulaRecContaBanco.getId().setCaVariavelBanco(caVariavel);
+                        anulaRecContaBanco.getId().setItem(i);
+                        anulaRecContaBanco.setValor(valor);
                         emLocal.persist(anulaRecContaBanco);
 
                         i++;
@@ -172,7 +198,13 @@ public class ImportaAnulacaoReceita extends Util {
 
                     anulacao = getMaxAnulacao(emLocal, anoAtual, tipoReceita);
 
-                    AnulaReceita anulaReceita = new AnulaReceita(anoAtual, tipoReceita, anulacao, dataGuia, "IMPORTAÇÃO DE ANULAÇÃO DE RECEITA", 1);
+                    AnulaReceita anulaReceita = new AnulaReceita();
+                    anulaReceita.getId().setAno(anoAtual);
+                    anulaReceita.getId().setTipo(tipoReceita);
+                    anulaReceita.getId().setAnulacao(anulacao);
+                    anulaReceita.setDataAnulacao(dataGuia);
+                    anulaReceita.setHistorico("IMPORTAÇÃO DE ANULAÇÃO DE RECEITA");
+                    anulaReceita.setDedutora(1);
                     emLocal.persist(anulaReceita);
 
                     // Itens da Anulação
@@ -199,7 +231,16 @@ public class ImportaAnulacaoReceita extends Util {
                         caFixo = Integer.parseInt(codAplicacao.substring(0, 3));
                         caVariavel = Integer.parseInt(codAplicacao.substring(3, 5));
 
-                        AnulaRecItens anulaRecItens = new AnulaRecItens(anoAtual, tipoReceita, anulacao, fichaReceita, 1, fonteRecurso, caFixo, caVariavel, valor);
+                        AnulaRecItens anulaRecItens = new AnulaRecItens();
+                        anulaRecItens.getId().setAno(anoAtual);
+                        anulaRecItens.getId().setTipo(tipoReceita);
+                        anulaRecItens.getId().setAnulacao(anulacao);
+                        anulaRecItens.getId().setFicha(fichaReceita);
+                        anulaRecItens.getId().setVersaoRecurso(1);
+                        anulaRecItens.getId().setFonteRecurso(fonteRecurso);
+                        anulaRecItens.getId().setCaFixo(caFixo);
+                        anulaRecItens.getId().setCaVariavel(caVariavel);
+                        anulaRecItens.setValor(valor);
                         emLocal.persist(anulaRecItens);
                     }
                     stmt3.close();
@@ -242,10 +283,22 @@ public class ImportaAnulacaoReceita extends Util {
                         financeiro(emLocal, tipoFinanceiro, anoAtual, tipoReceita, anulacao, fichaBanco, dataGuia, 1, fonteRecurso, caFixo, caVariavel, valor);
 
                         // Rec Conta banco
-                        AnulaRecContaBanco anulaRecContaBanco = new AnulaRecContaBanco(
-                                anoAtual, tipoReceita, anulacao,
-                                fichaReceita, 1, fonteRecurso, caFixo, caVariavel, i,
-                                fichaBanco, 1, fonteRecurso, caFixo, caVariavel, valor);
+                        AnulaRecContaBanco anulaRecContaBanco = new AnulaRecContaBanco();
+                        anulaRecContaBanco.getId().setAno(anoAtual);
+                        anulaRecContaBanco.getId().setTipo(tipoReceita);
+                        anulaRecContaBanco.getId().setAnulacao(anulacao);
+                        anulaRecContaBanco.getId().setFichaReceita(fichaReceita);
+                        anulaRecContaBanco.getId().setVersaoRecurso(1);
+                        anulaRecContaBanco.getId().setFonteRecurso(fonteRecurso);
+                        anulaRecContaBanco.getId().setCaFixo(caFixo);
+                        anulaRecContaBanco.getId().setCaVariavel(caVariavel);
+                        anulaRecContaBanco.getId().setFichaBanco(fichaBanco);
+                        anulaRecContaBanco.getId().setVersaoRecursoBanco(1);
+                        anulaRecContaBanco.getId().setFonteRecursoBanco(fonteRecurso);
+                        anulaRecContaBanco.getId().setCaFixoBanco(caFixo);
+                        anulaRecContaBanco.getId().setCaVariavelBanco(caVariavel);
+                        anulaRecContaBanco.getId().setItem(i);
+                        anulaRecContaBanco.setValor(valor);
                         emLocal.persist(anulaRecContaBanco);
 
                         i++;

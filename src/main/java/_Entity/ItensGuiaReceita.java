@@ -13,6 +13,7 @@ public class ItensGuiaReceita implements Serializable {
 
     @EmbeddedId
     private ItensGuiaReceitaPK id;
+    private String receita;
     private BigDecimal valor;
 
     public ItensGuiaReceita() {
@@ -20,7 +21,8 @@ public class ItensGuiaReceita implements Serializable {
     }
 
     public ItensGuiaReceita(Date ano, String tipo, Integer guia, Integer ficha, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, String receita, BigDecimal valor) {
-        this.id = new ItensGuiaReceitaPK(ano, tipo, guia, ficha, versaoRecurso, fonteRecurso, caFixo, caVariavel, receita);
+        this.id = new ItensGuiaReceitaPK(ano, tipo, guia, ficha, versaoRecurso, fonteRecurso, caFixo, caVariavel);
+        this.receita = receita;
         this.valor = valor;
     }
 
@@ -30,6 +32,14 @@ public class ItensGuiaReceita implements Serializable {
 
     public void setId(ItensGuiaReceitaPK id) {
         this.id = id;
+    }
+
+    public String getReceita() {
+        return receita;
+    }
+
+    public void setReceita(String receita) {
+        this.receita = receita;
     }
 
     public BigDecimal getValor() {

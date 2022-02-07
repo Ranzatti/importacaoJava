@@ -24,6 +24,14 @@ public class ReceitaMensal implements Serializable {
         this.orcado = orcado;
     }
 
+    public ReceitaMensalPK getId() {
+        return id;
+    }
+
+    public void setId(ReceitaMensalPK id) {
+        this.id = id;
+    }
+
     public BigDecimal getOrcado() {
         return orcado;
     }

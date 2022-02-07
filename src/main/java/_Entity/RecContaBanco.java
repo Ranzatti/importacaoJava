@@ -19,8 +19,9 @@ public class RecContaBanco implements Serializable {
 		this.id = new RecContaBancoPK();
 	}
 
-	public RecContaBanco(Date ano, String tipo, Integer guia, Integer ficha, Integer versaoRecurso, Integer recurso, Integer caFixo, Integer caVariavel, Integer fichaBanco, Integer versaoRecursoBanco, Integer fonteRecursoBanco, Integer caFixoBanco, Integer caVariavelBanco, Integer item, BigDecimal valor) {
-		this.id = new RecContaBancoPK(ano, tipo, guia, ficha, versaoRecurso, recurso, caFixo, caVariavel, item, fichaBanco, versaoRecursoBanco, fonteRecursoBanco, caFixoBanco, caVariavelBanco);
+	public RecContaBanco(Date ano, String tipo, Integer guia, Integer fichaReceita, Integer versaoRecurso, Integer fonteRecurso, Integer caFixo, Integer caVariavel, Integer fichaBanco,
+						 Integer versaoRecursoBanco, Integer fonteRecursoBanco, Integer caFixoBanco, Integer caVariavelBanco, Integer item, BigDecimal valor) {
+		this.id = new RecContaBancoPK(ano, tipo, guia, fichaReceita, versaoRecurso, fonteRecurso, caFixo, caVariavel, item, fichaBanco, versaoRecursoBanco, fonteRecursoBanco, caFixoBanco, caVariavelBanco);
 		this.valor = valor;
 	}
 
